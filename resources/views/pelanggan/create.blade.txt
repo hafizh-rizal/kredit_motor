@@ -1,0 +1,103 @@
+@extends('be.master')
+
+@section('navbar')
+    @include('be.navbar')
+@endsection
+
+@section('sidebar')
+    @include('be.sidebar')
+@endsection
+
+@section('content')
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5>Tambah Pelanggan</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('pelanggan.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <div class="form-group">
+                    <label>Nama Pelanggan</label>
+                    <input type="text" name="nama_pelanggan" class="form-control" value="{{ old('nama_pelanggan') }}">
+                    @error('nama_pelanggan') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email') }}">
+                    @error('email') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>Kata Kunci</label>
+                    <input type="password" name="kata_kunci" class="form-control">
+                    @error('kata_kunci') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>No Telepon</label>
+                    <input type="text" name="no_telp" class="form-control" value="{{ old('no_telp') }}">
+                    @error('no_telp') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <!-- Alamat 1 -->
+                <div class="form-group">
+                    <label>Alamat 1</label>
+                    <input type="text" name="alamat1" class="form-control" value="{{ old('alamat1') }}">
+                    @error('alamat1') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label>Kota</label>
+                        <input type="text" name="kota1" class="form-control" value="{{ old('kota1') }}">
+                    </div>
+                    <div class="form-group col">
+                        <label>Propinsi</label>
+                        <input type="text" name="propinsi1" class="form-control" value="{{ old('propinsi1') }}">
+                    </div>
+                    <div class="form-group col">
+                        <label>Kodepos</label>
+                        <input type="text" name="kodepos1" class="form-control" value="{{ old('kodepos1') }}">
+                    </div>
+                </div>
+
+                <!-- Alamat 2 & 3 (optional) -->
+                @for ($i = 2; $i <= 3; $i++)
+                <h6>Alamat {{ $i }} (opsional)</h6>
+                <div class="form-group">
+                    <label>Alamat {{ $i }}</label>
+                    <input type="text" name="alamat{{ $i }}" class="form-control" value="{{ old("alamat$i") }}">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label>Kota</label>
+                        <input type="text" name="kota{{ $i }}" class="form-control" value="{{ old("kota$i") }}">
+                    </div>
+                    <div class="form-group col">
+                        <label>Propinsi</label>
+                        <input type="text" name="propinsi{{ $i }}" class="form-control" value="{{ old("propinsi$i") }}">
+                    </div>
+                    <div class="form-group col">
+                        <label>Kodepos</label>
+                        <input type="text" name="kodepos{{ $i }}" class="form-control" value="{{ old("kodepos$i") }}">
+                    </div>
+                </div>
+                @endfor
+
+                <div class="form-group">
+                    <label>Foto</label>
+                    <input type="file" name="foto" class="form-control-file">
+                    @error('foto') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                <a href="{{ route('pelanggan.index') }}" class="btn btn-secondary">Batal</a>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection

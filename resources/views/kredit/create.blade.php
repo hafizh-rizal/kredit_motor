@@ -1,0 +1,61 @@
+@extends('be.master')
+
+@section('navbar')
+    @include('be.navbar')
+@endsection
+
+@section('sidebar')
+    @include('be.sidebar')
+@endsection
+
+@section('content')
+<div class="page-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>Form Tambah Kredit</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('kredit.store') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label>Pengajuan Kredit</label>
+                    <select name="id_pengajuan_kredit" class="form-control" required>
+                        <option value="">-- Pilih Pengajuan Kredit --</option>
+                        @foreach($pengajuanKredit as $data)
+                            <option value="{{ $data->id }}">
+                                {{ $data->pelanggan->nama_pelanggan }} - {{ $data->motor->nama_motor }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Metode Pembayaran</label>
+                    <select name="id_metode_bayar" class="form-control" required>
+                        <option value="">-- Pilih Metode Pembayaran --</option>
+                        @foreach($metodeBayar as $data)
+                            <option value="{{ $data->id }}">
+                                {{ $data->metode_pembayaran }} - {{ $data->no_rekening }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>                
+                <div class="form-group">
+                    <label>Tanggal Mulai Kredit</label>
+                    <input type="date" name="tgl_mulai_kredit" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Status Kredit</label>
+                    <select name="status_kredit" class="form-control" required>
+                        <option value="">-- Pilih Status --</option>
+                        <option value="Dicicil">Dicicil</option>
+                        <option value="Macet">Macet</option>
+                        <option value="Lunas">Lunas</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                <a href="{{ route('kredit.index') }}" class="btn btn-secondary">Kembali</a>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection

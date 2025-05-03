@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Pengiriman;
+use App\Models\Kredit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use App\Models\PengajuanKredit;
+
+class PengirimanController extends Controller
+{
+
+    public function myPengiriman()
+    {
+        $pengiriman = Pengiriman::whereHas('kredit.pengajuanKredit', function ($query) {
+            $query->where('id_pelanggan', Auth::guard('pelanggan')->user()->id);
+        })->get();
+
+        return view('pengiriman.my_pengiriman', compact('pengiriman'));
+    }
+
+    
+    
+    public function show($id)
+{
+    $pengiriman = Pengiriman::findOrFail($id);
+    return view('pengiriman.show', compact('pengiriman'));
+}
+
+    
+
+    public function index()
+    {
+        $pengiriman = Pengiriman::with('kredit')->latest()->get();
+        return view('pengiriman.index', compact('pengiriman'));
+    }
+
+    public function create()
+    {
+        $kredit = Kredit::with('pengajuanKredit.pelanggan')->get();
+        return view('pengiriman.create', compact('kredit'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'invoice' => 'required|string|max:255',
+            'tgl_kirim' => 'required|date',
+            'status_kirim' => 'required|in:Sedang Dikirim,Tiba Di Tujuan',
+            'nama_kurir' => 'required|string|max:30',
+            'telpon_kurir' => 'required|string|max:15',
+            'bukti_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'keterangan' => 'nullable|string',
+            'id_kredit' => 'required|exists:kredit,id',
+        ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('bukti_foto')) {
+            $data['bukti_foto'] = $request->file('bukti_foto')->store('pengiriman');
+        }
+
+        Pengiriman::create($data);
+
+        return redirect()->route('pengiriman.index')->with('success', 'Data pengiriman berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $pengiriman = Pengiriman::findOrFail($id);
+        $kredit = Kredit::all();
+        return view('pengiriman.edit', compact('pengiriman', 'kredit'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'invoice' => 'required|string|max:255',
+            'tgl_kirim' => 'required|date',
+            'status_kirim' => 'required|in:Sedang Dikirim,Tiba Di Tujuan',
+            'nama_kurir' => 'required|string|max:30',
+            'telpon_kurir' => 'required|string|max:15',
+            'bukti_foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'keterangan' => 'nullable|string',
+            'id_kredit' => 'required|exists:kredit,id',
+        ]);
+
+        $pengiriman = Pengiriman::findOrFail($id);
+        $data = $request->all();
+
+        if ($request->hasFile('bukti_foto')) {
+            if ($pengiriman->bukti_foto) {
+                Storage::delete($pengiriman->bukti_foto);
+            }
+            $data['bukti_foto'] = $request->file('bukti_foto')->store('pengiriman');
+        }
+
+        $pengiriman->update($data);
+
+        return redirect()->route('pengiriman.index')->with('success', 'Data pengiriman berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $pengiriman = Pengiriman::findOrFail($id);
+
+            if ($pengiriman->bukti_foto) {
+                Storage::delete($pengiriman->bukti_foto);
+            }
+
+            $pengiriman->delete();
+
+            return redirect()->route('pengiriman.index')->with('success', 'Data pengiriman berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->route('pengiriman.index')->with('error', 'Data tidak dapat dihapus karena masih terhubung dengan data lain.');
+        } catch (\Exception $e) {
+            return redirect()->route('pengiriman.index')->with('error', 'Terjadi kesalahan saat menghapus data.');
+        }
+    }
+}
