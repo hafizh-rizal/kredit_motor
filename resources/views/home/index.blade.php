@@ -8,7 +8,7 @@
         </ol>
         <div class="carousel-inner" role="listbox">
             <div class="carousel-item active">
-                <img src="{{ asset('front-end/img/home.jpg')}}" class="img-fluid w-100" alt="First slide"/>
+                <img src="{{ asset('front-end/img/home2.jpg')}}" class="img-fluid w-100" alt="First slide"/>
                 <div class="carousel-caption">
                     <div class="container py-4">
                         <div class="row g-5">

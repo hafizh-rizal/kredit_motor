@@ -24,10 +24,11 @@ class PengirimanController extends Controller
     
     
     public function show($id)
-{
-    $pengiriman = Pengiriman::findOrFail($id);
-    return view('pengiriman.show', compact('pengiriman'));
-}
+    {
+        $item = Pengiriman::with('kredit.pengajuanKredit.motor')->findOrFail($id);
+        return view('pengiriman.show', compact('item'));
+    }
+    
 
     
 

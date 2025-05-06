@@ -16,6 +16,7 @@ class Angsuran extends Model
         'angsuran_ke', 
         'bukti_pembayaran',
         'total_bayar', 
+        'status_pembayaran',
         'keterangan'
     ];
 

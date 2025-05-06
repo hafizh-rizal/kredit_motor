@@ -9,7 +9,7 @@
     <link rel="icon" href="{{ asset('front-end/img/car-1.png') }}">
     <style>
         body {
-            background: url('{{ asset('front-end/img/g2.jpg') }}') no-repeat center center fixed;
+            background: url('{{ asset('front-end/img/g3.jpg') }}') no-repeat center center fixed;
             background-size: cover;
             height: 100vh;
             display: flex;
@@ -24,8 +24,8 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             width: 100%;
             max-width: 900px;
-            overflow-y: auto; /* Enable scrolling if content exceeds height */
-            max-height: 90vh; /* Limit maximum height */
+            overflow-y: auto; 
+            max-height: 90vh; 
         }
         .form-control, .form-select {
             background-color: #f8f9fa;

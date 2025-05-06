@@ -37,16 +37,19 @@ Route::get('/login', [AuthController::class, 'loginForm'])->middleware('guest')-
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/marketing', [MarketingController::class, 'index'])->name('marketing.index');
+    Route::get('/ceo', [CeoController::class, 'index'])->name('ceo.index');
+});
 
-Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-Route::get('/marketing', [MarketingController::class, 'index'])->name('marketing.index');
-Route::get('/ceo', [CeoController::class, 'index'])->name('ceo.index');
 
 Route::middleware('auth')->group(function () {
 Route::get('/pengajuan_kredit/saya', [PengajuanKreditController::class, 'myPengajuan'])->name('pengajuan_kredit.saya')->middleware('auth:pelanggan');
 Route::get('/pengajuan_kredit/saya/{pengajuan_kredit}', [PengajuanKreditController::class, 'show'])->name('pengajuan_kredit.show');
 Route::get('/kredit/saya', [KreditController::class, 'myKredit'])->name('kredit.saya')->middleware('auth:pelanggan');
 Route::get('pengiriman/saya', [PengirimanController::class, 'myPengiriman'])->name('pengiriman.saya')->middleware('auth:pelanggan');
+Route::get('/pengiriman/saya/{pengiriman}', [PengirimanController::class, 'show'])->name('pengiriman.show');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -62,7 +65,7 @@ Route::get('pengiriman/saya', [PengirimanController::class, 'myPengiriman'])->na
     Route::resource('pengiriman', PengirimanController::class);
 });
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 Route::get('product', [ProductController::class, 'index'])->name('product.index');

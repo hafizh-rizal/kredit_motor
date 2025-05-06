@@ -53,17 +53,17 @@
                     <input type="number" name="telpon_kurir" class="form-control @error('telpon_kurir') is-invalid @enderror" id="telpon_kurir" value="{{ old('telpon_kurir', $pengiriman->telpon_kurir) }}" required>
                     @error('telpon_kurir')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
-
-                <div class="form-group">
-                    <label for="bukti_foto">Bukti Foto</label>
-                    @if($pengiriman->bukti_foto)
-                        <div class="mb-2">
-                            <img src="{{ asset($pengiriman->bukti_foto) }}" alt="Bukti Foto" width="100" class="img-thumbnail">
-                        </div>
-                    @endif
-                    <input type="file" name="bukti_foto" class="form-control @error('bukti_foto') is-invalid @enderror" id="bukti_foto">
-                    @error('bukti_foto')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                </div>
+                    <div class="form-group">
+                        <label for="bukti_foto">Bukti Foto</label>
+                        @if($pengiriman->bukti_foto)
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $pengiriman->bukti_foto) }}" alt="Bukti Foto" width="100" class="img-thumbnail">
+                            </div>
+                        @endif
+                        <input type="file" name="bukti_foto" class="form-control @error('bukti_foto') is-invalid @enderror" id="bukti_foto">
+                        @error('bukti_foto')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                    </div>
+                    
 
                 <div class="form-group">
                     <label for="keterangan">Keterangan</label>

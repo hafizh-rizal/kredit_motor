@@ -37,6 +37,7 @@
                                 <th>Total Bayar</th>
                                 <th>Bukti Pembayaran</th>
                                 <th>Keterangan</th>
+                                <th>Status Pembayaran</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -59,6 +60,15 @@
                                     </td>
                                     <td>{{ $data->keterangan ?? '-' }}</td>
                                     <td>
+                                        <span class="badge 
+                                            @if($data->status_pembayaran == 'Menunggu') badge-warning
+                                            @elseif($data->status_pembayaran == 'Diterima') badge-success
+                                            @else badge-danger
+                                            @endif">
+                                            {{ $data->status_pembayaran }}
+                                        </span>
+                                    </td>
+                                    <td>
                                         <a href="{{ route('angsuran.edit', $data->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                         <form action="{{ route('angsuran.destroy', $data->id) }}" method="POST" class="d-inline">
                                             @csrf
@@ -69,7 +79,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">Tidak ada data angsuran.</td>
+                                    <td colspan="9" class="text-center">Tidak ada data angsuran.</td>
                                 </tr>
                             @endforelse
                         </tbody>

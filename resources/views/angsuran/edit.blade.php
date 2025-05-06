@@ -86,6 +86,19 @@
                         @enderror
                     </div>
 
+                    <div class="form-group">
+                        <label for="status_pembayaran">Status Pembayaran</label>
+                        <select name="status_pembayaran" id="status_pembayaran" class="form-control @error('status_pembayaran') is-invalid @enderror" required>
+                            <option value="Menunggu" {{ old('status_pembayaran', $angsuran->status_pembayaran) == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
+                            <option value="Diterima" {{ old('status_pembayaran', $angsuran->status_pembayaran) == 'Diterima' ? 'selected' : '' }}>Diterima</option>
+                            <option value="Ditolak" {{ old('status_pembayaran', $angsuran->status_pembayaran) == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        </select>
+                        @error('status_pembayaran')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+
                     <button type="submit" class="btn btn-primary">Update</button>
                     <a href="{{ route('angsuran.index') }}" class="btn btn-secondary">Kembali</a>
                 </form>

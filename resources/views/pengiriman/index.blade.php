@@ -51,10 +51,10 @@
                             <td>{{ $item->telpon_kurir }}</td>
                             <td>
                                 @if($item->bukti_foto)
-                                    <img src="{{ asset('storage/' . $item->bukti_foto) }}" alt="Bukti" width="50" class="img-thumbnail">
-                                @else
-                                    <span class="text-muted">Tidak ada foto</span>
-                                @endif
+                                <img src="{{ asset('storage/' . $item->bukti_foto) }}" alt="Bukti" width="50" class="img-thumbnail">
+                            @else
+                                <span class="text-muted">Tidak ada foto</span>
+                            @endif                            
                             </td>                            
                             <td>{{ $item->keterangan }}</td>
                             <td>{{ $item->id_kredit }}</td>

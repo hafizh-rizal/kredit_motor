@@ -56,19 +56,19 @@ class KreditController extends Controller
 
     $pengajuan = PengajuanKredit::with('jenisCicilan')->findOrFail($request->id_pengajuan_kredit);
     $tenor = $pengajuan->jenisCicilan->lama_cicilan;
-    $cicilanPerBulan = $pengajuan->cicilan_perbulan;
-
-    $totalCicilan = $cicilanPerBulan * $tenor;
     $tglSelesai = Carbon::parse($request->tgl_mulai_kredit)->addMonths($tenor);
-
+  
+    $sisaKredit = $pengajuan->harga_kredit - $pengajuan->dp;
+    
     Kredit::create([
         'id_pengajuan_kredit' => $request->id_pengajuan_kredit,
         'id_metode_bayar' => $request->id_metode_bayar,
         'tgl_mulai_kredit' => $request->tgl_mulai_kredit,
         'tgl_selesai_kredit' => $tglSelesai->format('Y-m-d'),
-        'sisa_kredit' => $totalCicilan,
+        'sisa_kredit' => $sisaKredit,
         'status_kredit' => $request->status_kredit,
     ]);
+    
 
     return redirect()->route('kredit.index')->with('success', 'Kredit berhasil ditambahkan');
 }
@@ -92,21 +92,20 @@ class KreditController extends Controller
         ]);
 
         $pengajuan = PengajuanKredit::with('jenisCicilan')->findOrFail($request->id_pengajuan_kredit);
-        $tenor = $pengajuan->jenisCicilan->lama_cicilan;
-        $cicilanPerBulan = $pengajuan->cicilan_perbulan;
+$tenor = $pengajuan->jenisCicilan->lama_cicilan;
+$tglSelesai = date('Y-m-d', strtotime("{$request->tgl_mulai_kredit} +{$tenor} months"));
 
-        $totalCicilan = $cicilanPerBulan * $tenor;
-        $tglSelesai = date('Y-m-d', strtotime("{$request->tgl_mulai_kredit} +{$tenor} months"));
+$sisaKredit = $pengajuan->harga_kredit - $pengajuan->dp;
 
-        $kredit = Kredit::findOrFail($id);
-        $kredit->update([
-            'id_pengajuan_kredit' => $request->id_pengajuan_kredit,
-            'id_metode_bayar' => $request->id_metode_bayar,
-            'tgl_mulai_kredit' => $request->tgl_mulai_kredit,
-            'tgl_selesai_kredit' => $tglSelesai,
-            'sisa_kredit' => $totalCicilan,
-            'status_kredit' => $request->status_kredit,
-        ]);
+$kredit = Kredit::findOrFail($id);
+$kredit->update([
+    'id_pengajuan_kredit' => $request->id_pengajuan_kredit,
+    'id_metode_bayar' => $request->id_metode_bayar,
+    'tgl_mulai_kredit' => $request->tgl_mulai_kredit,
+    'tgl_selesai_kredit' => $tglSelesai,
+    'sisa_kredit' => $sisaKredit,
+    'status_kredit' => $request->status_kredit,
+]);
 
         return redirect()->route('kredit.index')->with('success', 'Kredit berhasil diperbarui');
     }

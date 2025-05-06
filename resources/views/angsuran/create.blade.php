@@ -18,10 +18,13 @@
                         <select name="id_kredit" class="form-control @error('id_kredit') is-invalid @enderror" required>
                             <option value="">-- Pilih Kredit --</option>
                             @foreach($kredits as $kredit)
-                                <option value="{{ $kredit->id }}" {{ old('id_kredit', $kreditTerpilih ?? '') == $kredit->id ? 'selected' : '' }}>
-                                    {{ $kredit->id }} - {{ $kredit->pengajuanKredit->motor->nama_motor ?? 'Motor' }}
-                                </option>
-                            @endforeach
+                            <option 
+                                value="{{ $kredit->id }}"
+                                data-angsuran="{{ $kredit->pengajuanKredit->cicilan_perbulan }}"
+                                {{ old('id_kredit', $kreditTerpilih ?? '') == $kredit->id ? 'selected' : '' }}>
+                                {{ $kredit->id }} - {{ $kredit->pengajuanKredit->motor->nama_motor ?? 'Motor' }}
+                            </option>
+                        @endforeach                        
                         </select>
                         @error('id_kredit') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
@@ -40,7 +43,7 @@
 
                     <div class="form-group mb-3">
                         <label for="total_bayar">Total Bayar</label>
-                        <input type="number" step="0.01" name="total_bayar" class="form-control @error('total_bayar') is-invalid @enderror" value="{{ old('total_bayar') }}" required>
+                        <input type="number" step="0.01" name="total_bayar" id="total_bayar" class="form-control @error('total_bayar') is-invalid @enderror" value="{{ old('total_bayar') }}" required readonly>
                         @error('total_bayar') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
@@ -52,7 +55,10 @@
                         @error('bukti_pembayaran') <small class="text-danger">{{ $message }}</small> @enderror
                         <small class="text-muted">Upload bukti pembayaran (JPG, JPEG, PNG)</small>
                     </div>
-
+                    <div class="form-group mb-3">
+                        <label for="status_pembayaran">Status Pembayaran</label>
+                        <input type="text" name="status_pembayaran" class="form-control" value="Menunggu" readonly>
+                    </div>                    
                     <div class="form-group mb-3">
                         <label for="keterangan">Keterangan (Opsional)</label>
                         <textarea name="keterangan" class="form-control @error('keterangan') is-invalid @enderror">{{ old('keterangan') }}</textarea>
@@ -66,4 +72,23 @@
         </form>
     </div>
 </div>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectKredit = document.querySelector('select[name="id_kredit"]');
+        const inputTotalBayar = document.getElementById('total_bayar');
+
+        function updateTotalBayar() {
+            const selectedOption = selectKredit.options[selectKredit.selectedIndex];
+            const angsuran = selectedOption.getAttribute('data-angsuran');
+            inputTotalBayar.value = angsuran || '';
+        }
+
+        selectKredit.addEventListener('change', updateTotalBayar);
+
+        updateTotalBayar();
+    });
+</script>
+@endpush
+
 @endsection

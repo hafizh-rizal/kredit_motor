@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('angsuran_ke');
             $table->double('total_bayar');
             $table->string('bukti_pembayaran', 255)->nullable();
+            $table->enum('status_pembayaran', ['Menunggu', 'Diterima', 'Ditolak'])->default('Menunggu');
             $table->string('keterangan', 255)->nullable();
             $table->timestamps();
 

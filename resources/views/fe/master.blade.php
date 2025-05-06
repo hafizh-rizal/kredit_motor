@@ -34,13 +34,16 @@
             <div class="row gx-0 align-items-center" style="height: 45px;">
                 <div class="col-lg-6 text-center text-lg-start mb-lg-0">
                     <div class="d-flex flex-wrap">
-                        <a href="#" class="text-muted me-4"><i
-                                class="fas fa-map-marker-alt text-primary me-2"></i>Find A Location</a>
-                        <a href="tel:+01234567890" class="text-muted me-4"><i
-                                class="fas fa-phone-alt text-primary me-2"></i>+01234567890</a>
-                        <a href="mailto:example@gmail.com" class="text-muted me-0"><i
-                                class="fas fa-envelope text-primary me-2"></i>Example@gmail.com</a>
-                    </div>
+                        <a href="https://www.google.com/maps" target="_blank" class="text-muted me-4">
+                            <i class="fas fa-map-marker-alt text-primary me-2"></i>Find A Location
+                        </a>
+                        <a href="tel:+62812345678" class="text-muted me-4">
+                            <i class="fas fa-phone-alt text-primary me-2"></i>+628 1234 5678
+                        </a>
+                        <a href="mailto:hrideofficial@gmail.com" class="text-muted me-0">
+                            <i class="fas fa-envelope text-primary me-2"></i>hrideofficial@gmail.com
+                        </a>
+                    </div>                    
                 </div>
                 <div class="col-lg-6 text-center text-lg-end">
                     <div class="d-flex align-items-center justify-content-end">
@@ -134,45 +137,51 @@
     <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
         <div class="container py-5">
             <div class="row g-5">
+                <!-- About Section -->
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="text-white mb-4">About Us</h4>
-                        <p class="mb-3">Dolor amet sit justo amet elitr clita ipsum elitr est. Lorem ipsum dolor sit amet.</p>
+                        <h4 class="text-white mb-4">Tentang Hride</h4>
+                        <p class="mb-3">Hride adalah platform kredit motor terpercaya yang membantu Anda memiliki motor impian dengan mudah dan cepat.</p>
                         <div class="position-relative">
                             <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text"
-                                placeholder="Enter your email">
+                                placeholder="Masukkan email Anda">
                             <button type="button"
-                                class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">Subscribe</button>
+                                class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">Langganan</button>
                         </div>
                     </div>
                 </div>
+    
+                <!-- Quick Links -->
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="text-white mb-4">Quick Links</h4>
-                        <a href="#"><i class="fas fa-angle-right me-2"></i> About</a>
-                        <a href="#"><i class="fas fa-angle-right me-2"></i> Cars</a>
-                        <a href="#"><i class="fas fa-angle-right me-2"></i> Car Types</a>
-                        <a href="#"><i class="fas fa-angle-right me-2"></i> Team</a>
-                        <a href="#"><i class="fas fa-angle-right me-2"></i> Contact us</a>
-                        <a href="#"><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+                        <h4 class="text-white mb-4">Tautan Cepat</h4>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Tentang Kami</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Daftar Motor</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Pengajuan Kredit</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Kontak</a>
+                        <a href="#"><i class="fas fa-angle-right me-2"></i> Syarat & Ketentuan</a>
                     </div>
                 </div>
+    
+                <!-- Business Hours -->
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="text-white mb-4">Business Hours</h4>
-                        <p class="mb-2"><strong>Mon - Friday:</strong> 09.00 am to 07.00 pm</p>
-                        <p class="mb-2"><strong>Saturday:</strong> 10.00 am to 05.00 pm</p>
-                        <p class="mb-2"><strong>Vacation:</strong> All Sunday is our vacation</p>
+                        <h4 class="text-white mb-4">Jam Operasional</h4>
+                        <p class="mb-2"><strong>Senin - Jumat:</strong> 08.00 - 17.00</p>
+                        <p class="mb-2"><strong>Sabtu:</strong> 09.00 - 14.00</p>
+                        <p class="mb-2"><strong>Minggu:</strong> Libur</p>
                     </div>
                 </div>
+    
+                <!-- Contact Info -->
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="text-white mb-4">Contact Info</h4>
-                        <a href="#"><i class="fa fa-map-marker-alt me-2"></i> 123 Street, New York, USA</a>
-                        <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>
-                        <a href="tel:+01234567890"><i class="fas fa-phone me-2"></i> +012 345 67890</a>
-                        <a href="#" class="mb-3"><i class="fas fa-print me-2"></i> +012 345 67890</a>
-                        <div class="d-flex">
+                        <h4 class="text-white mb-4">Kontak Kami</h4>
+                        <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Jl. Merdeka No.123, Jakarta, Indonesia</a>
+                        <a href="mailto:cs@hride.id"><i class="fas fa-envelope me-2"></i> cs@hride.id</a>
+                        <a href="tel:+6281234567890"><i class="fas fa-phone me-2"></i> +62 812 3456 7890</a>
+                        <a href="#"><i class="fas fa-print me-2"></i> +62 21 1234 5678</a>
+                        <div class="d-flex mt-3">
                             <a class="btn btn-secondary btn-md-square rounded-circle me-3" href="#"><i
                                     class="fab fa-facebook-f text-white"></i></a>
                             <a class="btn btn-secondary btn-md-square rounded-circle me-3" href="#"><i
@@ -187,21 +196,24 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Copyright -->
     <div class="container-fluid copyright py-4">
         <div class="container">
             <div class="row g-4 align-items-center">
                 <div class="col-md-6 text-center text-md-start mb-md-0">
-                    <span class="text-body"><a href="#" class="border-bottom text-white"><i
-                                class="fas fa-copyright text-light me-2"></i>Your Site Name</a>, All right
-                        reserved.</span>
+                    <span class="text-body"><a href="#" class="border-bottom text-white">
+                        <i class="fas fa-copyright text-light me-2"></i>
+                        Hride
+                    </a>, Semua Hak Dilindungi.</span>
                 </div>
                 <div class="col-md-6 text-center text-md-end text-body">
-                    Designed By <a class="border-bottom text-white" href="https://htmlcodex.com">HTML Codex</a>
+                    Dikembangkan oleh <a class="border-bottom text-white" href="#">Tim Hride Dev</a>
                 </div>
             </div>
         </div>
     </div>
+    
     <a href="#" class="btn btn-secondary btn-lg-square rounded-circle back-to-top"><i
             class="fa fa-arrow-up"></i></a>
 

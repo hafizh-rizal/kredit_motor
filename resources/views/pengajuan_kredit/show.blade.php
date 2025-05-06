@@ -137,7 +137,9 @@
 
         <div class="mb-4">
             <strong class="text-muted"><i class="fas fa-info-circle fa-lg text-info me-2"></i> Keterangan Status Pengajuan:</strong>
-            <p class="mt-2 fw-semibold text-dark" style="line-height: 1.6;">{{ $pengajuanKredit->keterangan_status_pengajuan ?? '<span class="text-muted fst-italic">Tidak ada keterangan</span>' }}</p>
+            <p class="mt-2 fw-semibold text-dark" style="line-height: 1.6;">
+                {!! $pengajuanKredit->keterangan_status_pengajuan ?? '<span class="text-muted fst-italic">Tidak ada keterangan</span>' !!}
+            </p>            
         </div>
 
         <div class="form-group mt-4">

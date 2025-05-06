@@ -83,17 +83,23 @@
                                 </li>
                             </ul>
                             <div class="text-center mt-3">
-                                @auth('pelanggan')
-                                    <a href="{{ route('pengajuan_kredit.create', ['motor_id' => $motor->id]) }}"
-                                        class="btn btn-primary rounded-pill py-2 px-4 shadow-sm">
-                                        <i class="bi bi-cash-coin me-2"></i> Ajukan Kredit
-                                    </a>
+                                @if ($motor->stok > 0)
+                                    @auth('pelanggan')
+                                        <a href="{{ route('pengajuan_kredit.create', ['motor_id' => $motor->id]) }}"
+                                            class="btn btn-primary rounded-pill py-2 px-4 shadow-sm">
+                                            <i class="bi bi-cash-coin me-2"></i> Ajukan Kredit
+                                        </a>
+                                    @else
+                                        <a href="{{ route('pelanggan.auth.login') }}"
+                                            class="btn btn-warning rounded-pill py-2 px-4 shadow-sm">
+                                            <i class="bi bi-box-arrow-in-right me-2"></i> Login untuk Kredit
+                                        </a>
+                                    @endauth
                                 @else
-                                    <a href="{{ route('pelanggan.auth.login') }}"
-                                        class="btn btn-warning rounded-pill py-2 px-4 shadow-sm">
-                                        <i class="bi bi-box-arrow-in-right me-2"></i> Login untuk Kredit
-                                    </a>
-                                @endauth
+                                    <button class="btn btn-danger rounded-pill py-2 px-4 shadow-sm" disabled>
+                                        <i class="bi bi-exclamation-circle me-2"></i> Stok Habis
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>
