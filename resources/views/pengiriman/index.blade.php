@@ -32,32 +32,86 @@
                             <th>Invoice</th>
                             <th>Tanggal Kirim</th>
                             <th>Status Kirim</th>
-                            <th>Nama Kurir</th>
-                            <th>Telpon Kurir</th>
+                            <th>Kurir</th>
+                            <th>Telpon</th>
                             <th>Bukti Foto</th>
-                            <th>Keterangan</th>
-                            <th>ID Kredit</th>
+                              <th>Keterangan</th>
+                            <th>Pelanggan</th>
+                            <th>Alamat</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pengiriman as $key => $item)
+                        @forelse ($pengiriman as $key => $item)
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $item->invoice }}</td>
-                            <td>{{ $item->tgl_kirim }}</td>
-                            <td>{{ $item->status_kirim }}</td>
+                           <td>{{ \Carbon\Carbon::parse($item->tgl_kirim)->format('d-m-Y H:i') }}</td>
+                            <td>
+                                @if($item->status_kirim == 'Sedang Dikirim')
+                                    <span class="badge bg-warning text-dark">{{ $item->status_kirim }}</span>
+                                @elseif($item->status_kirim == 'Tiba Di Tujuan')
+                                    <span class="badge bg-success">{{ $item->status_kirim }}</span>
+                                @else
+                                    <span class="badge bg-secondary">{{ $item->status_kirim }}</span>
+                                @endif
+                            </td>
                             <td>{{ $item->nama_kurir }}</td>
                             <td>{{ $item->telpon_kurir }}</td>
-                            <td>
-                                @if($item->bukti_foto)
-                                <img src="{{ asset('storage/' . $item->bukti_foto) }}" alt="Bukti" width="50" class="img-thumbnail">
-                            @else
-                                <span class="text-muted">Tidak ada foto</span>
-                            @endif                            
-                            </td>                            
-                            <td>{{ $item->keterangan }}</td>
-                            <td>{{ $item->id_kredit }}</td>
+                         <td>
+    @if ($item->bukti_foto)
+        <a href="#" data-toggle="modal" data-target="#modalFoto{{ $item->id }}">
+            <img src="{{ asset('storage/' . $item->bukti_foto) }}" class="img-thumbnail" width="60" alt="Bukti">
+        </a>
+
+        <!-- Modal Bukti Foto -->
+        <div class="modal fade" id="modalFoto{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalFotoLabel{{ $item->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalFotoLabel{{ $item->id }}">Bukti Foto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        @php
+                            $ext = pathinfo($item->bukti_foto, PATHINFO_EXTENSION);
+                        @endphp
+
+                        @if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
+                            <img src="{{ asset('storage/' . $item->bukti_foto) }}" class="img-fluid" alt="Bukti Foto">
+                        @elseif (strtolower($ext) == 'pdf')
+                            <iframe src="{{ asset('storage/' . $item->bukti_foto) }}" width="100%" height="500px"></iframe>
+                        @else
+                            <p>Format file tidak dikenali.</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        <span class="text-muted">Tidak Ada</span>
+    @endif
+</td>
+
+                             <td>{{ $item->keterangan ?? '-' }}</td>
+                           <td>{{ data_get($item, 'kredit.pengajuanKredit.pelanggan.nama_pelanggan', '-') }}</td>
+
+                           
+                            @php
+    $pengajuan = $item->kredit->pengajuanKredit ?? null;
+    $pel = $pengajuan?->pelanggan;
+    $field = $pengajuan?->alamat_pengiriman;
+    $alamat = match($field) {
+        'alamat1' => "{$pel->alamat1}, {$pel->kota1}, {$pel->propinsi1}, {$pel->kodepos1}",
+        'alamat2' => "{$pel->alamat2}, {$pel->kota2}, {$pel->propinsi2}, {$pel->kodepos2}",
+        'alamat3' => "{$pel->alamat3}, {$pel->kota3}, {$pel->propinsi3}, {$pel->kodepos3}",
+        default => '-',
+    };
+@endphp
+<td>{{ $alamat }}</td>
+
                             <td>
                                 <a href="{{ route('pengiriman.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                 <form action="{{ route('pengiriman.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
@@ -67,13 +121,11 @@
                                 </form>
                             </td>
                         </tr>
-                        @endforeach
-
-                        @if($pengiriman->isEmpty())
-                            <tr>
-                                <td colspan="10" class="text-center text-muted">Belum ada data pengiriman</td>
-                            </tr>
-                        @endif
+                        @empty
+                        <tr>
+                            <td colspan="10" class="text-center text-muted">Belum ada data pengiriman</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

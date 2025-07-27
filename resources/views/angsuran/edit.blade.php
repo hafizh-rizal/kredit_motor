@@ -21,23 +21,23 @@
                     @method('PUT')
 
                     <div class="form-group">
-                        <label for="id_kredit">Kredit</label>
-                        <select name="id_kredit" id="id_kredit" class="form-control @error('id_kredit') is-invalid @enderror" required>
-                            @foreach($kredits as $kredit)
-                                <option value="{{ $kredit->id }}" {{ old('id_kredit', $angsuran->id_kredit) == $kredit->id ? 'selected' : '' }}>
-                                    {{ $kredit->id }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('id_kredit')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+    <label for="id_kredit">Kredit</label>
+    <select class="form-control" disabled>
+        <option>
+            {{ $angsuran->kredit->id }}
+        </option>
+    </select>
+    <input type="hidden" name="id_kredit" value="{{ $angsuran->id_kredit }}">
+    @error('id_kredit')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
 
                     <div class="form-group">
                         <label for="tgl_bayar">Tanggal Bayar</label>
                         <input type="date" name="tgl_bayar" id="tgl_bayar" class="form-control @error('tgl_bayar') is-invalid @enderror"
-                            value="{{ old('tgl_bayar', $angsuran->tgl_bayar) }}" required>
+                            value="{{ old('tgl_bayar', $angsuran->tgl_bayar) }}" required readonly>
                         @error('tgl_bayar')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -46,7 +46,7 @@
                     <div class="form-group">
                         <label for="angsuran_ke">Angsuran Ke</label>
                         <input type="number" name="angsuran_ke" id="angsuran_ke" class="form-control @error('angsuran_ke') is-invalid @enderror"
-                            value="{{ old('angsuran_ke', $angsuran->angsuran_ke) }}" required>
+                            value="{{ old('angsuran_ke', $angsuran->angsuran_ke) }}" required readonly>
                         @error('angsuran_ke')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -55,12 +55,12 @@
                     <div class="form-group">
                         <label for="total_bayar">Total Bayar</label>
                         <input type="number" step="0.01" name="total_bayar" id="total_bayar" class="form-control @error('total_bayar') is-invalid @enderror"
-                            value="{{ old('total_bayar', $angsuran->total_bayar) }}" required>
+                            value="{{ old('total_bayar', $angsuran->total_bayar) }}" required readonly>
                         @error('total_bayar')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-
+{{-- 
                     <div class="form-group">
                         <label for="bukti_pembayaran">Bukti Pembayaran</label>
                         <input type="file" name="bukti_pembayaran" class="form-control @error('bukti_pembayaran') is-invalid @enderror" accept="image/*">
@@ -76,7 +76,7 @@
                                 None
                             @endif
                         </small>
-                    </div>
+                    </div> --}}
 
                     <div class="form-group">
                         <label for="keterangan">Keterangan</label>

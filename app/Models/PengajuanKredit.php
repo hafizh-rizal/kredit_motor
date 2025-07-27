@@ -28,6 +28,7 @@ class PengajuanKredit extends Model
         'url_slip_gaji',
         'url_foto',
         'status_pengajuan',
+        'alamat_pengiriman',
         'keterangan_status_pengajuan'
     ];
 
@@ -51,8 +52,9 @@ class PengajuanKredit extends Model
         return $this->belongsTo(Asuransi::class, 'id_asuransi');
     }
 
-    public function kredit()
-    {
-        return $this->hasMany(Kredit::class, 'id_pengajuan_kredit');
-    }
+  public function kredit()
+{
+    return $this->hasOne(Kredit::class, 'id_pengajuan_kredit');
+}
+
 }

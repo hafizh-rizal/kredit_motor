@@ -21,8 +21,17 @@
 
                 <div class="form-group">
                     <label for="invoice">Invoice</label>
-                    <input type="text" name="invoice" class="form-control @error('invoice') is-invalid @enderror" id="invoice" value="{{ old('invoice') }}" required>
-                    @error('invoice')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                    <input 
+                        type="text" 
+                        name="invoice" 
+                        id="invoice"
+                        class="form-control @error('invoice') is-invalid @enderror" 
+                        value="{{ old('invoice', $invoice) }}" 
+                        readonly
+                    >
+                    @error('invoice')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="form-group">
@@ -54,8 +63,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="bukti_foto">Bukti Foto</label>
-                    <input type="file" name="bukti_foto" class="form-control @error('bukti_foto') is-invalid @enderror" id="bukti_foto">
+                    <label for="bukti_foto">Bukti Foto</label><br>
+
+                    {{-- Preview kamera --}}
+                    <video id="video" width="300" autoplay></video><br>
+                    <button type="button" class="btn btn-sm btn-primary mt-2" onclick="takePhoto()">Ambil Foto</button>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                    <input type="hidden" name="bukti_foto_data" id="bukti_foto_data">
+
+                    <p class="text-muted mt-3">Atau pilih file secara manual:</p>
+                    <input type="file" name="bukti_foto" class="form-control @error('bukti_foto') is-invalid @enderror" accept="image/*">
                     @error('bukti_foto')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
 
@@ -70,14 +87,31 @@
                     <select name="id_kredit" id="id_kredit" class="form-control @error('id_kredit') is-invalid @enderror" required>
                         <option value="">-- Pilih Kredit --</option>
                         @foreach($kredit as $item)
-                        <<option value="{{ $item->id }}" {{ old('id_kredit') == $item->id ? 'selected' : '' }}>
-                            {{ $item->id }} - 
-                            {{ optional($item->pengajuanKredit->pelanggan)->nama_pelanggan ?? 'Pelanggan Tidak Diketahui' }} - 
-                            {{ optional($item->pengajuanKredit->motor)->nama_motor ?? 'Motor Tidak Diketahui' }}
-                        </option>                        
+                            @php
+                                $pengajuan = $item->pengajuanKredit;
+                                $pel = $pengajuan?->pelanggan;
+                                $field = $pengajuan?->alamat_pengiriman;
+
+                                $alamatLengkap = match($field) {
+                                    'alamat1' => "{$pel->alamat1}, {$pel->kota1}, {$pel->propinsi1}, {$pel->kodepos1}",
+                                    'alamat2' => "{$pel->alamat2}, {$pel->kota2}, {$pel->propinsi2}, {$pel->kodepos2}",
+                                    'alamat3' => "{$pel->alamat3}, {$pel->kota3}, {$pel->propinsi3}, {$pel->kodepos3}",
+                                    default => '-',
+                                };
+                            @endphp
+                            <option value="{{ $item->id }}"
+                                data-alamat="{{ $alamatLengkap }}"
+                                {{ old('id_kredit') == $item->id ? 'selected' : '' }}>
+                                {{ $item->id }} - {{ $pel?->nama_pelanggan ?? 'Pelanggan Tidak Diketahui' }} - {{ $pengajuan?->motor?->nama_motor ?? 'Motor Tidak Diketahui' }}
+                            </option>
                         @endforeach
                     </select>
                     @error('id_kredit')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="alamat_pengiriman">Alamat Pengiriman</label>
+                    <input type="text" id="alamat_pengiriman" class="form-control" readonly>
                 </div>
 
                 <button type="submit" class="btn btn-success">Simpan</button>
@@ -86,4 +120,38 @@
         </div>
     </div>
 </div>
+
+{{-- Script kamera & alamat --}}
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const buktiFotoInput = document.getElementById('bukti_foto_data');
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(err => {
+            alert("Tidak bisa mengakses kamera: " + err.message);
+        });
+
+    function takePhoto() {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL('image/jpeg');
+        buktiFotoInput.value = imageData;
+        alert("Foto berhasil diambil. Klik Simpan untuk mengunggah.");
+    }
+
+    function updateAlamat() {
+        const selected = document.getElementById('id_kredit').selectedOptions[0];
+        const alamat = selected.getAttribute('data-alamat') || '';
+        document.getElementById('alamat_pengiriman').value = alamat;
+    }
+
+    document.getElementById('id_kredit').addEventListener('change', updateAlamat);
+    window.addEventListener('DOMContentLoaded', updateAlamat);
+</script>
 @endsection

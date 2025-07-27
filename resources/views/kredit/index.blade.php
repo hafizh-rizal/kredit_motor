@@ -31,14 +31,18 @@
                 <table class="table table-hover table-striped table-bordered">
                     <thead class="thead-dark">
                         <tr>
-                            <th>#</th>
+                            <th>ID</th>
                             <th>Pelanggan</th>
                             <th>Motor</th>
                             <th>Metode Bayar</th>
                             <th>Tgl Mulai</th>
                             <th>Tgl Selesai</th>
+                            <th>Jumlah DP</th>
+                            <th>Status DP</th>
+                            <th>Bukti DP</th>
                             <th>Sisa Kredit</th>
-                            <th>Status</th>
+                            <th>Status Kredit</th>
+                            <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -51,6 +55,57 @@
                                 <td>{{ $item->metodeBayar->metode_pembayaran ?? '-' }}</td>
                                 <td>{{ $item->tgl_mulai_kredit }}</td>
                                 <td>{{ $item->tgl_selesai_kredit }}</td>
+                              <td>
+    @if($item->dp)
+        Rp{{ number_format($item->dp, 0, ',', '.') }}
+    @else
+        -
+    @endif
+</td>
+
+                                <td>
+                                    <span class="badge 
+                                        @if($item->status_pembayaran_dp == 'Sudah Dibayar') bg-success 
+                                        @elseif($item->status_pembayaran_dp == 'Menunggu Verifikasi') bg-warning 
+                                        @else bg-secondary @endif">
+                                        {{ $item->status_pembayaran_dp }}
+                                    </span>
+                                </td>
+                               <td>
+    @if($item->bukti_pembayaran_dp)
+        <a href="#" data-toggle="modal" data-target="#modalDP{{ $item->id }}" class="btn btn-sm btn-info">Lihat</a>
+
+        <!-- Modal Bukti Pembayaran DP -->
+        <div class="modal fade" id="modalDP{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalDPLabel{{ $item->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDPLabel{{ $item->id }}">Bukti Pembayaran DP</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        @php
+                            $ext = pathinfo($item->bukti_pembayaran_dp, PATHINFO_EXTENSION);
+                        @endphp
+
+                        @if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
+                            <img src="{{ asset('storage/' . $item->bukti_pembayaran_dp) }}" class="img-fluid" alt="Bukti Pembayaran DP">
+                        @elseif (strtolower($ext) == 'pdf')
+                            <iframe src="{{ asset('storage/' . $item->bukti_pembayaran_dp) }}" width="100%" height="500px"></iframe>
+                        @else
+                            <p>Format file tidak dikenali.</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        <span class="text-muted">-</span>
+    @endif
+</td>
+
                                 <td>Rp{{ number_format($item->sisa_kredit, 0, ',', '.') }}</td>
                                 <td>
                                     <span class="badge 
@@ -60,6 +115,7 @@
                                         {{ $item->status_kredit }}
                                     </span>
                                 </td>
+                                <td>{{ $item->keterangan_status_kredit ?? '-' }}</td>
                                 <td>
                                     <a href="{{ route('kredit.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                     <form action="{{ route('kredit.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
@@ -71,7 +127,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center text-muted">Belum ada data kredit</td>
+                                <td colspan="13" class="text-center text-muted">Belum ada data kredit</td>
                             </tr>
                         @endforelse
                     </tbody>

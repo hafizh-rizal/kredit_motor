@@ -36,5 +36,13 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345'),
             'role' => 'ceo',
         ]);
+
+        //Kurir
+        User::create([
+            'name' => 'Kurir',
+            'email' => 'kurir@kredit.com',
+            'password' => Hash::make('123456'),
+            'role' => 'kurir',
+        ]);
     }
 }

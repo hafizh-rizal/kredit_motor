@@ -25,20 +25,23 @@ class Motor extends Model
         'stok'
     ];
 
-public function jenis_motor()
-{
-    return $this->belongsTo(JenisMotor::class, 'id_jenis_motor');
-}
+    public function jenis_motor()
+    {
+        return $this->belongsTo(JenisMotor::class, 'id_jenis_motor');
+    }
 
-    
     public function asuransi()
     {   
         return $this->belongsTo(Asuransi::class);
     }
-    
+
     public function jenis_cicilan()
     {
         return $this->belongsTo(JenisCicilan::class);
     }
-    
+
+    public function pengajuan_kredit()
+    {
+        return $this->hasMany(\App\Models\PengajuanKredit::class, 'id_motor');
+    }
 }

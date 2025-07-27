@@ -11,64 +11,76 @@
         </ol>
     </div>
 </div>
-<div class="container mt-5 mb-5">
-    <h1 class="text-center mb-4 text-dark">Informasi Kredit Anda</h1>
+<<div class="container my-5">
+    <h2 class="text-center mb-4 text-dark">Informasi Kredit Anda</h2>
 
     @if($kredit->isEmpty())
-        <div class="alert alert-info text-center" role="alert">
+        <div class="alert alert-info text-center shadow-sm">
             <i class="fas fa-info-circle me-2"></i> Anda belum memiliki kredit aktif.
         </div>
     @else
-        <div class="card shadow-sm border-0 rounded-3">
-            <div class="card-body p-4">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body px-4 py-5">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover mb-0">
+                    <table class="table table-bordered table-hover align-middle">
                         <thead class="bg-primary text-white text-center">
                             <tr>
                                 <th>Motor</th>
                                 <th>Metode Pembayaran</th>
+                                <th>Status DP</th>
                                 <th>Tanggal Mulai</th>
-                                <th>Status</th>
+                                <th>Status Kredit</th>
                                 <th>Sisa Kredit</th>
+                                <th>Detail</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($kredit as $k)
                                 <tr>
-                                    <td>{{ $k->pengajuanKredit->motor->nama_motor }}</td>
+                                    <td class="fw-semibold">{{ $k->pengajuanKredit->motor->nama_motor }}</td>
                                     <td class="text-center">
                                         @if($k->metodeBayar)
-                                            {{ $k->metodeBayar->metode_pembayaran }} - {{ $k->metodeBayar->no_rekening }}
+                                            {{ $k->metodeBayar->metode_pembayaran }}<br>
+                                            <small class="text-muted">{{ $k->metodeBayar->no_rekening }}</small>
                                         @else
-                                            -
+                                            <span class="text-muted">-</span>
                                         @endif
-                                    </td>                                    
-                                    <td class="text-center">{{ \Carbon\Carbon::parse($k->tgl_mulai_kredit)->format('d M Y') }}</td>
-                                    <td class="text-center ">
+                                    </td>    
+                                    <td class="text-center">
                                         @php
-                                            $statusClass = '';
-                                            if ($k->status_kredit == 'Aktif') {
-                                                $statusClass = 'badge bg-success';
-                                            } elseif ($k->status_kredit == 'Lunas') {
-                                                $statusClass = 'badge bg-success';
-                                            } elseif ($k->status_kredit == 'Dicicil') {
-                                                $statusClass = 'badge bg-warning';
-                                            } else {
-                                                $statusClass = 'badge bg-danger'; 
-                                            }
+                                            $dpStatusClass = match($k->status_pembayaran_dp) {
+                                                'Sudah Dibayar' => 'badge bg-success',
+                                                'Menunggu Verifikasi' => 'badge bg-warning text-dark',
+                                                default => 'badge bg-danger',
+                                            };
+                                        @endphp
+                                        <span class="{{ $dpStatusClass }}">{{ $k->status_pembayaran_dp }}</span>
+                                    </td>
+                                    <td class="text-center">{{ \Carbon\Carbon::parse($k->tgl_mulai_kredit)->format('d M Y') }}</td>
+                                    <td class="text-center">
+                                        @php
+                                            $statusClass = match($k->status_kredit) {
+                                                'Aktif', 'Lunas' => 'bg-success',
+                                                'Dicicil' => 'bg-warning text-dark',
+                                                default => 'bg-danger',
+                                            };
                                         @endphp
                                         <span class="badge {{ $statusClass }}">{{ $k->status_kredit }}</span>
-                                    
-                                        @if($k->status_kredit == 'Dicicil' || $k->status_kredit == 'Macet')
+
+                                        @if(in_array($k->status_kredit, ['Dicicil', 'Macet']))
                                             <div class="mt-2">
-                                                <a href="{{ route('angsuran.create', ['id_kredit' => $k->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                <a href="{{ route('angsuran.create', ['id_kredit' => $k->id]) }}" class="btn btn-sm btn-outline-primary shadow-sm">
                                                     <i class="fas fa-credit-card me-1"></i> Bayar Angsuran
                                                 </a>
                                             </div>
                                         @endif
                                     </td>
-                                    
-                                    <td class="text-end">Rp {{ number_format($k->sisa_kredit, 0, ',', '.') }}</td>
+                                    <td class="text-end fw-bold">Rp {{ number_format($k->sisa_kredit, 0, ',', '.') }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ route('pelanggan.kredit.show', $k->id) }}" class="btn btn-sm btn-outline-info shadow-sm">
+                                            <i class="fas fa-info-circle me-1"></i> Detail Kredit
+                                        </a>
+                                    </td>                                    
                                 </tr>
                             @endforeach
                         </tbody>
@@ -83,79 +95,40 @@
 
 @section('styles')
 <style>
-   =
     .card {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        background-color: #fff; 
-    }
-
-    .card-body {
-        padding: 2rem;
-    }
-
-    
-    .table {
-        background-color: #fff; 
-    }
-
-    .table th, .table td {
-        vertical-align: middle;
-        color: #212529; 
+        border-radius: 1rem;
+        background-color: #ffffff;
     }
 
     .table thead th {
-        background-color: #007bff; 
-        color: white;
-        border-bottom: 2px solid #0056b3;
-        font-weight: 500;
-    }
-
-    .table tbody tr:nth-child(even) {
-        background-color: #f8f9fa; 
+        font-weight: 600;
+        font-size: 0.95rem;
     }
 
     .badge {
-        font-size: 0.9rem;
-        font-weight: 400;
-        padding: 0.4rem 0.8rem;
-        border-radius: 0.25rem;
-        color: #fff; 
+        font-size: 0.85rem;
+        padding: 0.5em 0.75em;
+        border-radius: 0.4rem;
     }
 
-    .badge-success {
-        background-color: #28a745;
-    }
-
-    .badge-primary {
-        background-color: #007bff;
-    }
-
-    .badge-warning {
-        background-color: #ffc107;
-        color: #212529; 
-    }
-    .badge-danger {
-        background-color: #dc3545;
+    .table td, .table th {
+        vertical-align: middle;
+        font-size: 0.95rem;
     }
 
     @media (max-width: 768px) {
-        h1 {
-            font-size: 2.2rem;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
         .table th, .table td {
-            font-size: 0.9rem;
-            padding: 0.75rem 0.5rem;
+            font-size: 0.85rem;
+            padding: 0.6rem 0.4rem;
+        }
+
+        h2 {
+            font-size: 1.6rem;
         }
     }
 </style>
 @endsection
 
 @section('scripts')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endsection

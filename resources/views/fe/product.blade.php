@@ -37,7 +37,7 @@
                                 <div class="col-4">
                                     <i class="fa fa-gas-pump text-dark"></i> <span class="text-body ms-1">Petrol</span>
                                 </div>
-                                <div class="col-4 border-end border-white">
+                                <div class="col-4 border-end border-white"
                                     <i class="fa fa-car text-dark"></i> <span class="text-body ms-1">2015</span>
                                 </div>
                                 <div class="col-4 border-end border-white">

@@ -19,14 +19,14 @@
             <!-- Button Tambah -->
             <a href="{{ route('motor.create') }}" class="btn btn-primary mb-3">Tambah Motor</a>
 
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
+         @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
 
             <!-- Tabel -->
             <div class="table-responsive">
@@ -52,35 +52,93 @@
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $motor->nama_motor }}</td>
-                            <td>
-                             
-                                {{ $motor->jenis_motor->jenis ?? 'N/A' }}</td>
+                           <td>{{ $motor->jenis_motor->merk ?? 'N/A' }} - {{ $motor->jenis_motor->jenis ?? 'N/A' }}</td>
                             <td>{{ number_format($motor->harga_jual ?: 0, 0, ',', '.') }}</td>
                             <td>{{ $motor->deskripsi_motor ?? 'Tidak ada deskripsi' }}</td>
                             <td>{{ $motor->warna }}</td>
                             <td>{{ $motor->kapasitas_mesin }}</td>
                            
-                            <td>
-                                @if($motor->foto1)
-                                <img src="{{ asset('storage/' . $motor->foto1) }}" width="50" class="img-thumbnail">
-                                @else
-                                    Tidak ada foto
-                                @endif
-                            </td>
-                            <td>
-                                @if($motor->foto2)
-                                    <img src="{{ asset('storage/' . $motor->foto2) }}" width="50" class="img-thumbnail">
-                                @else
-                                    Tidak ada foto
-                                @endif
-                            </td>
-                            <td>
-                                @if($motor->foto3)
-                                    <img src="{{ asset('storage/' . $motor->foto3) }}" width="50" class="img-thumbnail">
-                                @else
-                                    Tidak ada foto
-                                @endif
-                            </td>
+                           <td>
+    @if($motor->foto1)
+        <a href="#" data-toggle="modal" data-target="#modalFoto1{{ $motor->id }}">
+            <img src="{{ asset('storage/' . $motor->foto1) }}" width="50" class="img-thumbnail">
+        </a>
+
+        <!-- Modal Foto 1 -->
+        <div class="modal fade" id="modalFoto1{{ $motor->id }}" tabindex="-1" role="dialog" aria-labelledby="modalFoto1Label{{ $motor->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Foto 1</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="{{ asset('storage/' . $motor->foto1) }}" class="img-fluid" alt="Foto 1">
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        Tidak ada foto
+    @endif
+</td>
+
+<td>
+    @if($motor->foto2)
+        <a href="#" data-toggle="modal" data-target="#modalFoto2{{ $motor->id }}">
+            <img src="{{ asset('storage/' . $motor->foto2) }}" width="50" class="img-thumbnail">
+        </a>
+
+        <!-- Modal Foto 2 -->
+        <div class="modal fade" id="modalFoto2{{ $motor->id }}" tabindex="-1" role="dialog" aria-labelledby="modalFoto2Label{{ $motor->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Foto 2</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="{{ asset('storage/' . $motor->foto2) }}" class="img-fluid" alt="Foto 2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        Tidak ada foto
+    @endif
+</td>
+
+<td>
+    @if($motor->foto3)
+        <a href="#" data-toggle="modal" data-target="#modalFoto3{{ $motor->id }}">
+            <img src="{{ asset('storage/' . $motor->foto3) }}" width="50" class="img-thumbnail">
+        </a>
+
+        <!-- Modal Foto 3 -->
+        <div class="modal fade" id="modalFoto3{{ $motor->id }}" tabindex="-1" role="dialog" aria-labelledby="modalFoto3Label{{ $motor->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Foto 3</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="{{ asset('storage/' . $motor->foto3) }}" class="img-fluid" alt="Foto 3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        Tidak ada foto
+    @endif
+</td>
+
                             <td>{{ $motor->stok }}</td>
                             
                             <td>

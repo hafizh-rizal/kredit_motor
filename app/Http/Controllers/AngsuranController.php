@@ -34,7 +34,6 @@ public function store(Request $request)
     ]);
 
     try {
-        // Simpan angsuran baru dengan status "Menunggu"
         $angsuran = Angsuran::create([
             'id_kredit'    => $request->id_kredit,
             'tgl_bayar'    => $request->tgl_bayar,
@@ -47,7 +46,7 @@ public function store(Request $request)
 
         $kredit = Kredit::findOrFail($request->id_kredit);
 
-        return redirect()->route('kredit.saya')->with('success', 'Angsuran berhasil ditambahkan.');
+        return redirect()->route('kredit.show', $request->id_kredit)->with('success', 'Angsuran berhasil ditambahkan.');
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Gagal menambahkan angsuran.')->withInput();
     }
@@ -79,7 +78,6 @@ public function store(Request $request)
             $oldStatus = $angsuran->status_pembayaran;
             $oldTotalBayar = $angsuran->total_bayar;
             
-            // Update data angsuran
             $angsuran->update([
                 'id_kredit'    => $request->id_kredit,
                 'tgl_bayar'    => $request->tgl_bayar,
@@ -92,7 +90,6 @@ public function store(Request $request)
                 'status_pembayaran' => $request->status_pembayaran,
             ]);
             
-            // Jika sebelumnya status belum Diterima, dan sekarang jadi Diterima
             if ($oldStatus !== 'Diterima' && $request->status_pembayaran === 'Diterima') {
                 $newSisaKredit = max(0, $kredit->sisa_kredit - $request->total_bayar);
                 $kredit->update([

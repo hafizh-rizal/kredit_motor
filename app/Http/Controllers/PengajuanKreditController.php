@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Notifications\StatusPengajuanKreditNotification;
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
 use App\Models\PengajuanKredit;
 use App\Models\Motor;
 use App\Models\Pelanggan;
@@ -36,10 +39,11 @@ class PengajuanKreditController extends Controller
 
     public function create(Request $request)
     {
+        $user = auth('pelanggan')->user();
         $motor_id = $request->query('motor_id');
         $motor = Motor::findOrFail($motor_id);
 
-        $pelanggan = Pelanggan::all();
+        $pelanggan = Pelanggan::where('id', $user->id)->first();
         $jenisCicilan = JenisCicilan::all();
         $asuransi = Asuransi::all();
 
@@ -51,89 +55,114 @@ class PengajuanKreditController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'id_pelanggan' => 'required|exists:pelanggan,id',
-            'id_motor' => 'required|exists:motor,id',
-            'harga_cash' => 'required|numeric',
-            'dp' => 'required|numeric',
-            'id_jenis_cicilan' => 'required|exists:jenis_cicilan,id',
-            'harga_kredit' => 'required|numeric',
-            'id_asuransi' => 'required|exists:asuransi,id',
-            'biaya_asuransi' => 'nullable|numeric',
-            'keterangan_status_pengajuan' => 'nullable|string',
-            'url_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'url_ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'url_npwp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'url_slip_gaji' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'url_foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ]);
+    'id_pelanggan' => 'required|exists:pelanggan,id',
+    'id_motor' => 'required|exists:motor,id',
+    'harga_cash' => 'required|numeric',
+    'dp' => 'required|numeric',
+    'id_jenis_cicilan' => 'required|exists:jenis_cicilan,id',
+    'harga_kredit' => 'required|numeric',
+    'id_asuransi' => 'required|exists:asuransi,id',
+    'biaya_asuransi' => 'nullable|numeric',
+    'alamat_pengiriman' => 'required|in:alamat1,alamat2,alamat3',
+    'keterangan_status_pengajuan' => 'nullable|string',
+    'url_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    'url_ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    'url_npwp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    'url_slip_gaji' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    'url_foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+]);
+
 
         $jenisCicilan = JenisCicilan::findOrFail($request->id_jenis_cicilan);
         $validatedData['cicilan_perbulan'] = ($request->harga_kredit - $request->dp) / $jenisCicilan->lama_cicilan;
         $validatedData['tgl_pengajuan_kredit'] = now();
         $validatedData['status_pengajuan'] = 'Menunggu Konfirmasi'; 
+        $validatedData['alamat_pengiriman'] = $request->alamat_pengiriman;
 
-        // Handle file uploads
+
+
         foreach (['url_kk', 'url_ktp', 'url_npwp', 'url_slip_gaji', 'url_foto'] as $fileField) {
             if ($request->hasFile($fileField)) {
                 $validatedData[$fileField] = $request->file($fileField)->store("pengajuan_kredit/{$fileField}", 'public');
             }
         }
 
-        // Save PengajuanKredit data
         PengajuanKredit::create($validatedData);
 
         return redirect()->route('pengajuan_kredit.saya')->with('success', 'Pengajuan berhasil dikirim, silakan tunggu konfirmasi.');
     }
 
     public function edit($id)
-    {
-        $pengajuanKredit = PengajuanKredit::findOrFail($id);
-        $pelanggan = Pelanggan::all();
-        $motor = Motor::all();
-        $jenisCicilan = JenisCicilan::all();
-        $asuransi = Asuransi::all();
-        return view('pengajuan_kredit.edit', compact('pengajuanKredit', 'pelanggan', 'motor', 'jenisCicilan', 'asuransi'));
+{
+    $pengajuanKredit = PengajuanKredit::findOrFail($id);
+    $pelanggan = Pelanggan::all();
+    $motor = Motor::all();
+    $jenisCicilan = JenisCicilan::all();
+    $asuransi = Asuransi::all();
+    $pelangganTerpilih = $pelanggan->firstWhere('id', $pengajuanKredit->id_pelanggan);
+
+    return view('pengajuan_kredit.edit', compact(
+        'pengajuanKredit',
+        'pelanggan',
+        'motor',
+        'jenisCicilan',
+        'asuransi',
+        'pelangganTerpilih' 
+    ));
+}
+
+
+  public function update(Request $request, $id)
+{
+    $validatedData = $request->validate([
+        'id_pelanggan' => 'required|exists:pelanggan,id',
+        'id_motor' => 'required|exists:motor,id',
+        'harga_cash' => 'required|numeric',
+        'dp' => 'required|numeric',
+        'id_jenis_cicilan' => 'required|exists:jenis_cicilan,id',
+        'harga_kredit' => 'required|numeric',
+        'id_asuransi' => 'required|exists:asuransi,id',
+        'biaya_asuransi' => 'nullable|numeric',
+        'alamat_pengiriman' => 'required|in:alamat1,alamat2,alamat3',
+        'keterangan_status_pengajuan' => 'nullable|string',
+        'status_pengajuan' => 'required|string',
+        'url_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'url_ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'url_npwp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'url_slip_gaji' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'url_foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
+
+    $pengajuanKredit = PengajuanKredit::findOrFail($id);
+    $jenisCicilan = JenisCicilan::findOrFail($request->id_jenis_cicilan);
+
+    $validatedData['cicilan_perbulan'] = ($request->harga_kredit - $request->dp) / $jenisCicilan->lama_cicilan;
+
+    foreach (['url_kk', 'url_ktp', 'url_npwp', 'url_slip_gaji', 'url_foto'] as $fileField) {
+        if ($request->hasFile($fileField)) {
+            $validatedData[$fileField] = $request->file($fileField)->store("pengajuan_kredit/{$fileField}", 'public');
+        }
     }
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'id_pelanggan' => 'required|exists:pelanggan,id',
-            'id_motor' => 'required|exists:motor,id',
-            'harga_cash' => 'required|numeric',
-            'dp' => 'required|numeric',
-            'id_jenis_cicilan' => 'required|exists:jenis_cicilan,id',
-            'id_asuransi' => 'required|exists:asuransi,id',
-            'harga_kredit' => 'required|numeric',
-            'status_pengajuan' => 'required|in:Menunggu Konfirmasi,Diproses,Dibatalkan Pembeli,Dibatalkan Penjual,Bermasalah,Diterima',
-            'keterangan_status_pengajuan' => 'nullable|string',
-        ]);
+    // Deteksi perubahan status
+    $statusLama = $pengajuanKredit->status_pengajuan;
 
-        $pengajuanKredit = PengajuanKredit::findOrFail($id);
-        $jenisCicilan = JenisCicilan::findOrFail($request->id_jenis_cicilan);
-        $cicilanPerBulan = ($request->harga_kredit - $request->dp) / $jenisCicilan->lama_cicilan;
+    // Update data
+    $pengajuanKredit->update($validatedData);
 
-        $pengajuanKredit->update([
-            'id_pelanggan' => $request->id_pelanggan,
-            'id_motor' => $request->id_motor,
-            'harga_cash' => $request->harga_cash,
-            'dp' => $request->dp,
-            'id_jenis_cicilan' => $request->id_jenis_cicilan,
-            'harga_kredit' => $request->harga_kredit,
-            'id_asuransi' => $request->id_asuransi,
-            'biaya_asuransi' => $request->biaya_asuransi,
-            'cicilan_perbulan' => $cicilanPerBulan,
-            'url_kk' => $request->hasFile('url_kk') ? $request->file('url_kk')->store('kk', 'public') : $pengajuanKredit->url_kk,
-            'url_ktp' => $request->hasFile('url_ktp') ? $request->file('url_ktp')->store('ktp', 'public') : $pengajuanKredit->url_ktp,
-            'url_npwp' => $request->hasFile('url_npwp') ? $request->file('url_npwp')->store('npwp', 'public') : $pengajuanKredit->url_npwp,
-            'url_slip_gaji' => $request->hasFile('url_slip_gaji') ? $request->file('url_slip_gaji')->store('slip_gaji', 'public') : $pengajuanKredit->url_slip_gaji,
-            'url_foto' => $request->hasFile('url_foto') ? $request->file('url_foto')->store('foto', 'public') : $pengajuanKredit->url_foto,
-            'status_pengajuan' => $request->status_pengajuan,
-            'keterangan_status_pengajuan' => $request->keterangan_status_pengajuan,
-        ]);
 
-        return redirect()->route('pengajuan_kredit.index')->with('success', 'Pengajuan Kredit berhasil diperbarui');
+    if ($statusLama !== $validatedData['status_pengajuan']) {
+       $pelanggan = $pengajuanKredit->pelanggan;
+
+if ($pelanggan) {
+    $pelanggan->notify(new StatusPengajuanKreditNotification($pengajuanKredit));
+}
+
     }
+
+    return redirect()->route('pengajuan_kredit.index')->with('success', 'Pengajuan Kredit berhasil diperbarui');
+}
+
 
     public function destroy(PengajuanKredit $pengajuanKredit)
     {

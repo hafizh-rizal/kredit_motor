@@ -1,208 +1,205 @@
 @extends('fe.master')
 
 @section('content')
-<div class="card shadow-lg rounded-3 border-0">
-    <div class="card-body p-5">
-        <h4 class="card-title mb-5 text-primary fw-bold" style="letter-spacing: 0.5px;">Detail Pengajuan Kredit</h4>
+<div class="container my-5">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-5">
+            <h2 class="text-primary fw-bold mb-4">
+                <i class="fas fa-file-alt me-2"></i> Detail Pengajuan Kredit
+            </h2>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-user-circle fa-lg text-secondary me-3"></i>
-                    <div>
-                        <strong class="text-muted">Pelanggan:</strong>
-                        <p class="mb-0 fw-semibold text-dark">{{ $pengajuanKredit->pelanggan->nama_pelanggan }}</p>
+            {{-- Informasi Pelanggan & Motor --}}
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-user-circle fa-lg text-secondary me-3"></i>
+                        <div>
+                            <div class="text-muted">Pelanggan</div>
+                            <div class="fw-semibold text-dark">{{ $pengajuanKredit->pelanggan->nama_pelanggan }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-motorcycle fa-lg text-info me-3"></i>
+                        <div>
+                            <div class="text-muted">Motor</div>
+                            <div class="fw-semibold text-dark">{{ $pengajuanKredit->motor->nama_motor }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-motorcycle fa-lg text-info me-3"></i>
-                    <div>
-                        <strong class="text-muted">Motor:</strong>
-                        <p class="mb-0 fw-semibold text-dark">{{ $pengajuanKredit->motor->nama_motor }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-tag fa-lg text-success me-3"></i>
-                    <div>
-                        <strong class="text-muted">Harga Kredit:</strong>
-                        <p class="mb-0 fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->harga_kredit, 0, ',', '.') }}</p>
+            {{-- Harga --}}
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-tag fa-lg text-success me-3"></i>
+                        <div>
+                            <div class="text-muted">Harga Kredit</div>
+                            <div class="fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->harga_kredit, 0, ',', '.') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-money-bill-wave fa-lg text-warning me-3"></i>
+                        <div>
+                            <div class="text-muted">Harga Cash</div>
+                            <div class="fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->harga_cash, 0, ',', '.') }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-money-bill-wave fa-lg text-warning me-3"></i>
-                    <div>
-                        <strong class="text-muted">Harga Cash:</strong>
-                        <p class="mb-0 fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->harga_cash, 0, ',', '.') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-hand-holding-usd fa-lg text-primary me-3"></i>
-                    <div>
-                        <strong class="text-muted">DP:</strong>
-                        <p class="mb-0 fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->dp, 0, ',', '.') }}</p>
+            {{-- DP & Cicilan --}}
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-hand-holding-usd fa-lg text-primary me-3"></i>
+                        <div>
+                            <div class="text-muted">DP</div>
+                            <div class="fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->dp, 0, ',', '.') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-calendar-alt fa-lg text-secondary me-3"></i>
+                        <div>
+                            <div class="text-muted">Jenis Cicilan</div>
+                            <div class="fw-semibold text-dark">{{ $pengajuanKredit->jenisCicilan->lama_cicilan }} Bulan</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-calendar-alt fa-lg text-secondary me-3"></i>
-                    <div>
-                        <strong class="text-muted">Jenis Cicilan:</strong>
-                        <p class="mb-0 fw-semibold text-dark">{{ $pengajuanKredit->jenisCicilan->lama_cicilan }} Bulan</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-shield-alt fa-lg text-info me-3"></i>
-                    <div>
-                        <strong class="text-muted">Asuransi:</strong>
-                        <p class="mb-0 fw-semibold text-dark">{{ $pengajuanKredit->asuransi ? $pengajuanKredit->asuransi->nama_asuransi : '-' }}</p>
+            {{-- Asuransi --}}
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-shield-alt fa-lg text-info me-3"></i>
+                        <div>
+                            <div class="text-muted">Asuransi</div>
+                            <div class="fw-semibold text-dark">{{ $pengajuanKredit->asuransi->nama_asuransi ?? '-' }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-coins fa-lg text-success me-3"></i>
+                        <div>
+                            <div class="text-muted">Cicilan / Bulan</div>
+                            <div class="fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->cicilan_perbulan, 0, ',', '.') }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-coins fa-lg text-success me-3"></i>
-                    <div>
-                        <strong class="text-muted">Cicilan / Bulan:</strong>
-                        <p class="mb-0 fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->cicilan_perbulan, 0, ',', '.') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-money-check-alt fa-lg text-warning me-3"></i>
-                    <div>
-                        <strong class="text-muted">Biaya Asuransi:</strong>
-                        <p class="mb-0 fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->biaya_asuransi, 0, ',', '.') }}</p>
+            {{-- Biaya & Status --}}
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-money-check-alt fa-lg text-warning me-3"></i>
+                        <div>
+                            <div class="text-muted">Biaya Asuransi</div>
+                            <div class="fw-semibold text-dark">Rp {{ number_format($pengajuanKredit->biaya_asuransi, 0, ',', '.') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-box">
+                        <i class="fas fa-check-circle fa-lg text-success me-3"></i>
+                        <div>
+                            <div class="text-muted">Status Pengajuan</div>
+                            @php
+                                $class = match($pengajuanKredit->status_pengajuan) {
+                                    'Menunggu Konfirmasi' => 'bg-warning text-dark',
+                                    'Diproses' => 'bg-primary text-white',
+                                    'Dibatalkan Pembeli', 'Dibatalkan Penjual' => 'bg-danger text-white',
+                                    'Bermasalah' => 'bg-dark text-white',
+                                    'Diterima' => 'bg-success text-white',
+                                    default => 'bg-secondary text-white',
+                                };
+                                $icon = match($pengajuanKredit->status_pengajuan) {
+                                    'Menunggu Konfirmasi' => 'fa-clock',
+                                    'Diproses' => 'fa-cog fa-spin',
+                                    'Dibatalkan Pembeli', 'Dibatalkan Penjual' => 'fa-times-circle',
+                                    'Bermasalah' => 'fa-exclamation-triangle',
+                                    'Diterima' => 'fa-check-double',
+                                    default => 'fa-question-circle',
+                                };
+                            @endphp
+                            <span class="badge rounded-pill {{ $class }}">
+                                <i class="fas {{ $icon }} me-1"></i> {{ $pengajuanKredit->status_pengajuan }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-check-circle fa-lg me-3" style="color: #28a745;"></i>
+
+            {{-- Keterangan --}}
+            <div class="mb-4">
+                <div class="info-box align-items-start">
+                    <i class="fas fa-info-circle fa-lg text-info me-3 mt-1"></i>
                     <div>
-                        <strong class="text-muted">Status Pengajuan:</strong>
-                        @php
-                            $statusClass = '';
-                            $statusIcon = '';
-                            if ($pengajuanKredit->status_pengajuan == 'Menunggu Konfirmasi') {
-                                $statusClass = 'bg-warning text-dark';
-                                $statusIcon = 'fa-clock';
-                            } elseif ($pengajuanKredit->status_pengajuan == 'Diproses') {
-                                $statusClass = 'bg-primary text-white';
-                                $statusIcon = 'fa-cog fa-spin';
-                            } elseif (in_array($pengajuanKredit->status_pengajuan, ['Dibatalkan Pembeli', 'Dibatalkan Penjual'])) {
-                                $statusClass = 'bg-danger text-white';
-                                $statusIcon = 'fa-times-circle';
-                            } elseif ($pengajuanKredit->status_pengajuan == 'Bermasalah') {
-                                $statusClass = 'bg-dark text-white';
-                                $statusIcon = 'fa-exclamation-triangle';
-                            } elseif ($pengajuanKredit->status_pengajuan == 'Diterima') {
-                                $statusClass = 'bg-success text-white';
-                                $statusIcon = 'fa-check-double';
-                            } else {
-                                $statusClass = 'bg-light text-dark border';
-                                $statusIcon = 'fa-question-circle';
-                            }
-                        @endphp
-                        <span class="badge rounded-pill {{ $statusClass }}">
-                            <i class="{{ $statusIcon }} me-1"></i> {{ $pengajuanKredit->status_pengajuan }}
-                        </span>
+                        <div class="text-muted">Keterangan Status</div>
+                        <div class="fw-semibold text-dark">{!! $pengajuanKredit->keterangan_status_pengajuan ?? '<span class="text-muted fst-italic">Tidak ada keterangan</span>' !!}</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="mb-4">
-            <strong class="text-muted"><i class="fas fa-info-circle fa-lg text-info me-2"></i> Keterangan Status Pengajuan:</strong>
-            <p class="mt-2 fw-semibold text-dark" style="line-height: 1.6;">
-                {!! $pengajuanKredit->keterangan_status_pengajuan ?? '<span class="text-muted fst-italic">Tidak ada keterangan</span>' !!}
-            </p>            
-        </div>
+            {{-- Alamat Pengiriman --}}
+            <div class="mb-4">
+                <div class="info-box align-items-start">
+                    <i class="fas fa-map-marker-alt fa-lg text-danger me-3 mt-1"></i>
+                    <div>
+                        <div class="text-muted">Alamat Pengiriman</div>
+                        <div class="fw-semibold text-dark">
+                            @php
+                                $alamat = match($pengajuanKredit->alamat_pengiriman) {
+                                    'alamat1' => "{$pengajuanKredit->pelanggan->alamat1}, {$pengajuanKredit->pelanggan->kota1}, {$pengajuanKredit->pelanggan->propinsi1}, {$pengajuanKredit->pelanggan->kodepos1}",
+                                    'alamat2' => "{$pengajuanKredit->pelanggan->alamat2}, {$pengajuanKredit->pelanggan->kota2}, {$pengajuanKredit->pelanggan->propinsi2}, {$pengajuanKredit->pelanggan->kodepos2}",
+                                    'alamat3' => "{$pengajuanKredit->pelanggan->alamat3}, {$pengajuanKredit->pelanggan->kota3}, {$pengajuanKredit->pelanggan->propinsi3}, {$pengajuanKredit->pelanggan->kodepos3}",
+                                    default => '<span class="text-muted fst-italic">Alamat tidak diketahui</span>',
+                                };
+                            @endphp
+                            {!! $alamat !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="form-group mt-4">
-            <a href="{{ route('pengajuan_kredit.saya') }}" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold"><i class="fas fa-arrow-left me-2"></i> Kembali ke Produk</a>
+            {{-- Tombol Kembali --}}
+            <div class="mt-4">
+                <a href="{{ route('pengajuan_kredit.saya') }}" class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                    <i class="fas fa-arrow-left me-2"></i> Kembali ke Produk
+                </a>
+            </div>
         </div>
     </div>
 </div>
 @endsection
 
 @section('styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <style>
-        .card {
-            background-color: #f0f8ff; /* Warna latar belakang card biru muda */
-            border: 1px solid #007bff;
-            border-radius: 0.3rem;
-            transition: box-shadow 0.3s ease-in-out;
+        .info-box {
+            display: flex;
+            align-items: center;
+            background: #f9fafd;
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
         }
-        .card:hover {
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-        }
-        .card-title {
-            font-size: 1.75rem;
-            color: #007bff;
-        }
-        .text-muted {
-            color: #6c757d !important;
-            font-size: 0.9rem;
-        }
-        .fw-semibold {
-            font-weight: 500;
+        .info-box:hover {
+            background-color: #eef5ff;
         }
         .badge {
             font-size: 0.9rem;
-            padding: 0.6rem 1rem;
-            letter-spacing: 0.3px;
+            padding: 0.5rem 1rem;
+            letter-spacing: 0.5px;
         }
-        .btn-outline-secondary {
-            border-color: #6c757d;
-            color: #6c757d;
-        }
-        .btn-outline-secondary:hover {
-            background-color: #6c757d;
-            color: white;
-        }
-        .row + .row {
-            border-top: 1px solid #eee;
-            padding-top: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        /* Warna pada ikon */
-        .fa-user-circle { color: #6c757d; }
-        .fa-motorcycle { color: #007bff; }
-        .fa-tag { color: #28a745; }
-        .fa-money-bill-wave { color: #ffc107; }
-        .fa-hand-holding-usd { color: #007bff; }
-        .fa-calendar-alt { color: #6c757d; }
-        .fa-shield-alt { color: #17a2b8; }
-        .fa-coins { color: #28a745; }
-        .fa-money-check-alt { color: #ffc107; }
-        .fa-info-circle { color: #17a2b8; }
-        .fa-check-circle { color: #28a745; }
-        .fa-arrow-left { color: #6c757d; }
     </style>
 @endsection

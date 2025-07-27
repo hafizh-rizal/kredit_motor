@@ -17,6 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('id_metode_bayar');
             $table->date('tgl_mulai_kredit');
             $table->date('tgl_selesai_kredit');
+            $table->integer('dp')->nullable(); 
+            $table->string('bukti_pembayaran_dp', 255)->nullable();           
+            $table->enum('status_pembayaran_dp', ['Belum Dibayar', 'Menunggu Verifikasi', 'Sudah Dibayar'])->default('Belum Dibayar');
             $table->integer('sisa_kredit');
             $table->enum('status_kredit', ['Dicicil', 'Macet', 'Lunas']);
             $table->string('keterangan_status_kredit', 255)->nullable();

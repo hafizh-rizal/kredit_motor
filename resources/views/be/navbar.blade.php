@@ -46,19 +46,20 @@
                 <li class="user-profile header-notification">
                     <a href="#!">
                         <img src="{{ asset('back-end/images/avatar-4.jpg') }}" class="img-radius" alt="User-Profile-Image">
-                        <span>
-                            @if(Auth::check())
-                                {{ Auth::user()->role == 'admin' ? 'Admin Kredit' : (Auth::user()->role == 'marketing' ? 'Marketing Kredit' : 'CEO Kredit') }}
-                            @else
-                                Guest
-                            @endif
-                        </span>
+                 <span>
+    @if(Auth::check())
+        {{ ucfirst(Auth::user()->role) . ' Kredit' }}
+    @else
+        Guest
+    @endif
+</span>
+
                         <i class="ti-angle-down"></i>
                     </a>
                     <ul class="show-notification profile-notification">
-                        <li><a href="#!"><i class="ti-settings"></i> Settings</a></li>
+                        {{-- <li><a href="#!"><i class="ti-settings"></i> Settings</a></li>
                         <li><a href="user-profile.html"><i class="ti-user"></i> Profile</a></li>
-                        <li><a href="auth-lock-screen.html"><i class="ti-lock"></i> Lock Screen</a></li>
+                        <li><a href="auth-lock-screen.html"><i class="ti-lock"></i> Lock Screen</a></li> --}}
                         <li><a href="{{ route('login') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="ti-layout-sidebar-left"></i> Logout</a></li>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf

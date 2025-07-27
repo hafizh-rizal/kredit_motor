@@ -60,10 +60,10 @@
                         </div>
                         <div class="col-lg-7">
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset('front-end/img/attachment-img.jpg') }}" class="img-fluid rounded-circle border border-4 border-secondary" style="width: 100px; height: 100px;" alt="Image">
+                                <img src="{{ asset('front-end/img/hafizh.jpg') }}" class="img-fluid rounded-circle border border-4 border-secondary" style="width: 100px; height: 100px;" alt="Image">
                                 <div class="ms-4">
-                                    <h4 style="color: #212529;">John Doe</h4>
-                                    <p class="mb-0" style="color: #6c757d;">CEO Carveo</p>
+                                    <h4 style="color: #212529;">Hafizh Rizal</h4>
+                                    <p class="mb-0" style="color: #6c757d;">CEO HRide</p>
                                 </div>
                             </div>
                         </div>

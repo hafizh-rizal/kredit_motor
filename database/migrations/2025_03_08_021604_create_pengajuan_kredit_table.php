@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('url_foto', 255)->nullable();
             $table->enum('status_pengajuan', ['Menunggu Konfirmasi', 'Diproses', 'Dibatalkan Pembeli', 'Dibatalkan Penjual', 'Bermasalah', 'Diterima']);
             $table->string('keterangan_status_pengajuan', 255)->nullable();
+             $table->enum('alamat_pengiriman', ['alamat1', 'alamat2', 'alamat3']);
             $table->timestamps();
 
             $table->foreign('id_motor')->references('id')->on('motor');

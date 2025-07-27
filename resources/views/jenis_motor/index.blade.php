@@ -89,10 +89,10 @@
     }
 
     .image-zoom:hover {
-        transform: scale(2); /* Adjust the zoom level as needed */
-        transform-origin: center; /* Zoom from the center */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Optional shadow for better visual */
-        z-index: 10; /* Ensure the zoomed image is above other elements */
+        transform: scale(2); 
+        transform-origin: center; 
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+        z-index: 10; 
     }
 
     .text-truncate {
@@ -101,9 +101,9 @@
         text-overflow: ellipsis;
     }
 
-    /* Styling untuk tombol aksi */
+
     .action-buttons {
-        white-space: nowrap; /* Mencegah tombol agar tidak wrap ke baris baru */
+        white-space: nowrap; 
     }
 
     .btn-sm {
@@ -114,7 +114,7 @@
     }
 
     .edit-button {
-        background-color: #ffc107; /* Warna kuning khas untuk edit */
+        background-color: #ffc107; 
         border-color: #ffc107;
         color: #212529;
     }
@@ -125,7 +125,7 @@
     }
 
     .delete-button {
-        background-color: #dc3545; /* Warna merah khas untuk delete */
+        background-color: #dc3545; 
         border-color: #dc3545;
         color: #fff;
     }

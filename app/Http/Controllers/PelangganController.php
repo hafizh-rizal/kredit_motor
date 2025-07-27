@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\QueryException;
+
 
 class PelangganController extends Controller
 {
@@ -47,7 +50,8 @@ class PelangganController extends Controller
             $validated['foto'] = $request->file('foto')->store('pelanggan', 'public');
         }
 
-        Pelanggan::create($validated);
+       $validated['kata_kunci'] = Hash::make($validated['kata_kunci']);
+Pelanggan::create($validated);
 
         return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil ditambahkan.');
     }
@@ -85,18 +89,30 @@ class PelangganController extends Controller
             }
             $validated['foto'] = $request->file('foto')->store('pelanggan', 'public');
         }
+if ($request->filled('kata_kunci')) {
+    $validated['kata_kunci'] = Hash::make($validated['kata_kunci']);
+} else {
+    unset($validated['kata_kunci']);
+}
 
-        $pelanggan->update($validated);
+$pelanggan->update($validated);
 
-        return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
+
+        return redirect()->route('home.index')->with('success', 'Data pelanggan berhasil diperbarui.');
     }
 
-    public function destroy(Pelanggan $pelanggan)
-    {
+public function destroy(Pelanggan $pelanggan)
+{
+    try {
         if ($pelanggan->foto && Storage::disk('public')->exists($pelanggan->foto)) {
             Storage::disk('public')->delete($pelanggan->foto);
         }
         $pelanggan->delete();
+
         return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil dihapus.');
+    } catch (QueryException $e) {
+        return redirect()->route('pelanggan.index')->with('error', 'Gagal menghapus pelanggan karena masih memiliki data pengajuan kredit.');
     }
+}
+
 }

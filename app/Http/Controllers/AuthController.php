@@ -27,7 +27,10 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         } elseif ($user->role === 'ceo') {
             return redirect()->route('dashboard');
+        } elseif ($user->role === 'kurir') {
+            return redirect()->route('dashboard');
         }
+
 
         return redirect()->route('login.index');
     }
@@ -38,9 +41,8 @@ class AuthController extends Controller
 public function logout(Request $request)
 {
     Auth::guard('web')->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken(); 
-    
+    // $request->session()->invalidate();
+    // $request->session()->regenerateToken(); 
     return redirect()->route('login.index'); 
 }
 

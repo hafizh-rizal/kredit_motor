@@ -23,7 +23,7 @@
                     </div>
                     <div class="form-group mb-3">
                         <label>Harga Kredit</label>
-                        <input type="number" name="harga_kredit" class="form-control" value="{{ old('harga_kredit') }}">
+                        <input type="number" name="harga_kredit" class="form-control" value="{{ old('harga_kredit') }}" readonly>
                         @error('harga_kredit') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
@@ -36,7 +36,7 @@
 
                     <div class="form-group mb-3">
                         <label>DP</label>
-                        <input type="number" name="dp" class="form-control" value="{{ old('dp') }}">
+                        <input type="number" name="dp" class="form-control" value="{{ old('dp') }}" readonly>
                         @error('dp') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
@@ -73,7 +73,7 @@
 
                     <div class="form-group mb-3">
                         <label>Biaya Asuransi</label>
-                        <input type="number" name="biaya_asuransi" class="form-control" value="{{ old('biaya_asuransi') }}">
+                        <input type="number" name="biaya_asuransi" class="form-control" value="{{ old('biaya_asuransi') }}" readonly>
                         @error('biaya_asuransi') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>                    
 
@@ -131,6 +131,20 @@
                         <label>Status Pengajuan</label>
                         <input type="text" class="form-control" value="Menunggu Konfirmasi" disabled>
                     </div>
+
+                    <div class="mb-3">
+    <label for="alamat_pengiriman" class="form-label">Alamat Pengiriman</label>
+    <select name="alamat_pengiriman" id="alamat_pengiriman" class="form-control" required>
+        <option value="alamat1">Alamat 1 - {{ $pelanggan->alamat1 }}, {{ $pelanggan->kota1 }}, {{ $pelanggan->propinsi1 }}, {{ $pelanggan->kodepos1 }}</option>
+        @if ($pelanggan->alamat2)
+            <option value="alamat2">Alamat 2 - {{ $pelanggan->alamat2 }}, {{ $pelanggan->kota2 }}, {{ $pelanggan->propinsi2 }}, {{ $pelanggan->kodepos2 }}</option>
+        @endif
+        @if ($pelanggan->alamat3)
+            <option value="alamat3">Alamat 3 - {{ $pelanggan->alamat3 }}, {{ $pelanggan->kota3 }}, {{ $pelanggan->propinsi3 }}, {{ $pelanggan->kodepos3 }}</option>
+        @endif
+    </select>
+</div>
+
                     
                     <div class="form-group mb-3">
                         <label>Keterangan Status Pengajuan</label>
@@ -149,7 +163,7 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Ambil harga cash dari motor
+  
     const hargaCash = @json($motor->harga_jual);
     document.getElementById('harga_cash').value = hargaCash;
     document.getElementById('nama_motor').value = @json($motor->nama_motor);
@@ -161,40 +175,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const idAsuransiSelect = document.getElementById('id_asuransi');
     const biayaAsuransiInput = document.querySelector('input[name="biaya_asuransi"]');
 
-    // Fungsi untuk menghitung harga kredit dan biaya asuransi otomatis
-    function updateHargaKreditDanAsuransi() {
-        // Ambil data bunga cicilan dari pilihan jenis cicilan
-        const selectedOptionCicilan = idJenisCicilanSelect.options[idJenisCicilanSelect.selectedIndex];
-        const persentaseBunga = parseFloat(selectedOptionCicilan?.dataset.bunga || 0);
+  function updateHargaKreditDanAsuransi() {
+    const selectedOptionCicilan = idJenisCicilanSelect.options[idJenisCicilanSelect.selectedIndex];
+    const persentaseBunga = parseFloat(selectedOptionCicilan?.dataset.bunga || 0);
 
-        // Hitung harga kredit jika persentase bunga ada
-        if (!isNaN(persentaseBunga)) {
-            const hargaKredit = hargaCash + (hargaCash * persentaseBunga / 100);
-            hargaKreditInput.value = hargaKredit.toFixed(0); // Pembulatan ke angka bulat
+    let hargaKredit = hargaCash + (hargaCash * persentaseBunga / 100);
 
-            // Hitung DP secara otomatis (misalnya 20% dari harga kredit)
-            const dp = hargaKredit * 0.20; // 20% DP
-            dpInput.value = dp.toFixed(0); // Pembulatan ke angka bulat
-        }
+    // Hitung biaya asuransi berdasarkan margin
+    const selectedOptionAsuransi = idAsuransiSelect.options[idAsuransiSelect.selectedIndex];
+    const marginAsuransi = parseFloat(selectedOptionAsuransi?.dataset.margin || 0);
+    let biayaAsuransi = 0;
 
-        // Hitung biaya asuransi berdasarkan margin asuransi yang dipilih
-        const selectedOptionAsuransi = idAsuransiSelect.options[idAsuransiSelect.selectedIndex];
-        const marginAsuransi = parseFloat(selectedOptionAsuransi?.dataset.margin || 0);
+    if (!isNaN(marginAsuransi)) {
+        biayaAsuransi = hargaCash * marginAsuransi / 100;
+        biayaAsuransiInput.value = biayaAsuransi.toFixed(0);
 
-        // Jika margin asuransi ada, hitung biaya asuransi
-        if (!isNaN(marginAsuransi)) {
-            const biayaAsuransi = hargaKreditInput.value * marginAsuransi / 100;
-            biayaAsuransiInput.value = biayaAsuransi.toFixed(0); // Pembulatan ke angka bulat
-        }
+        // Tambahkan biaya asuransi ke harga kredit
+        hargaKredit += biayaAsuransi;
+    } else {
+        biayaAsuransiInput.value = '';
     }
 
-    // Event listener untuk memilih jenis cicilan
+    hargaKreditInput.value = hargaKredit.toFixed(0);
+
+    // Hitung DP 10%
+    const dp = hargaKredit * 0.10;
+    dpInput.value = dp.toFixed(0);
+}
+
     idJenisCicilanSelect.addEventListener('change', updateHargaKreditDanAsuransi);
 
-    // Event listener untuk memilih asuransi
     idAsuransiSelect.addEventListener('change', updateHargaKreditDanAsuransi);
 
-    // Jika sudah ada pilihan cicilan atau asuransi pada form yang sudah dibuka, langsung hitung harga kredit dan biaya asuransi
     if (idJenisCicilanSelect.value || idAsuransiSelect.value) {
         updateHargaKreditDanAsuransi();
     }

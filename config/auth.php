@@ -43,7 +43,7 @@ return [
 
     'pelanggan' => [
         'driver' => 'session',
-        'provider' => 'pelanggans',
+        'provider' => 'pelanggan',
     ],
 ],
 
@@ -71,7 +71,7 @@ return [
         'model' => env('AUTH_MODEL', App\Models\User::class),
     ],
 
-    'pelanggans' => [
+    'pelanggan' => [
         'driver' => 'eloquent',
         'model' => App\Models\Pelanggan::class,
     ],

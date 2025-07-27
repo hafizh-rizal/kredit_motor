@@ -96,14 +96,19 @@ class MotorController extends Controller
         return redirect()->route('motor.index')->with('success', 'Motor berhasil diupdate!');
     }
 
-    // Menghapus motor
-    public function destroy(Motor $motor)
-    {
-        $this->deleteMotorImages($motor);
-        $motor->delete();
-
-        return redirect()->route('motor.index')->with('success', 'Motor berhasil dihapus!');
+   public function destroy(Motor $motor)
+{
+    if ($motor->pengajuan_kredit()->exists()) {
+        return redirect()->route('motor.index')
+            ->with('error', 'Motor tidak dapat dihapus karena sedang digunakan dalam pengajuan kredit.');
     }
+    $this->deleteMotorImages($motor);
+
+    $motor->delete();
+
+    return redirect()->route('motor.index')->with('success', 'Motor berhasil dihapus!');
+}
+
 
     // Menyimpan gambar motor
     protected function saveMotorImages(Motor $motor, Request $request)
@@ -123,7 +128,6 @@ class MotorController extends Controller
         $motor->save();
     }
 
-    // Menghapus gambar motor
     protected function deleteMotorImages(Motor $motor)
     {
         if ($motor->foto1) {

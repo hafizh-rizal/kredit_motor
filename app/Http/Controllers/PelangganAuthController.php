@@ -71,30 +71,35 @@ class PelangganAuthController extends Controller
             'title' => 'Form Login Pelanggan'
         ]);
     }
+   public function login(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'kata_kunci' => 'required|string',
+    ]);
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'kata_kunci' => 'required|string',
-        ]);
+    $credentials = [
+        'email' => $request->email,
+        'password' => $request->kata_kunci,
+    ];
 
-        $pelanggan = Pelanggan::where('email', $request->email)->first();
+   if (Auth::guard('pelanggan')->attempt($credentials)) {
+    $request->session()->regenerate();
+    return redirect('/'); 
 
-        if ($pelanggan && Hash::check($request->kata_kunci, $pelanggan->kata_kunci)) {
-            Auth::guard('pelanggan')->login($pelanggan);
-            $request->session()->regenerate();
-            return redirect()->route('home.index'); 
-        }
-
-        return redirect()->back()->with('error', 'Email atau kata sandi salah.');
     }
+
+    return back()->with('error', 'Email atau kata sandi salah.');
+}
+
+
+
 
     public function logout(Request $request)
     {
         Auth::guard('pelanggan')->logout();
-        $request->session()->forget('pelanggan.auth.logout'); 
-        $request->session()->regenerateToken();
+        // $request->session()->forget('pelanggan.auth.logout'); 
+        // $request->session()->regenerateToken();
         return redirect()->route('home.index');
     }
 }

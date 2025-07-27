@@ -33,7 +33,7 @@
                     <select name="id_jenis_motor" class="form-control @error('id_jenis_motor') is-invalid @enderror" id="id_jenis_motor" required>
                         <option value="">Pilih Jenis Motor</option>
                         @foreach($jenis_motor as $jenis)
-                            <option value="{{ $jenis->id }}" {{ $motor->id_jenis_motor == $jenis->id ? 'selected' : '' }}>{{ $jenis->jenis }}</option>
+                           <option value="{{ $jenis->id }}">{{ $jenis->merk }} - {{ $jenis->jenis }}</option>
                         @endforeach
                     </select>
                     @error('id_jenis_motor')<span class="invalid-feedback">{{ $message }}</span>@enderror

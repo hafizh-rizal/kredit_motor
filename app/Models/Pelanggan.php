@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-
+use Illuminate\Notifications\Notifiable;
 
 class Pelanggan extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'pelanggan';
 
@@ -23,9 +22,11 @@ class Pelanggan extends Authenticatable
         'alamat3', 'kota3', 'propinsi3', 'kodepos3',
         'foto'
     ];
-    
-public function getAuthPassword()
-{
-    return $this->kata_kunci;
-}
+
+    protected $hidden = ['kata_kunci'];
+
+    public function getAuthPassword()
+    {
+        return $this->kata_kunci;
+    }
 }

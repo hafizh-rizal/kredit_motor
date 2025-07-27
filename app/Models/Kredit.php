@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Angsuran;
+
 
 class Kredit extends Model
 {
@@ -15,7 +17,10 @@ class Kredit extends Model
         'id_pengajuan_kredit', 
         'id_metode_bayar', 
         'tgl_mulai_kredit', 
-        'tgl_selesai_kredit', 
+        'tgl_selesai_kredit',
+        'dp',
+        'bukti_pembayaran_dp',
+        'status_pembayaran_dp', 
         'sisa_kredit', 
         'status_kredit', 
         'keterangan_status_kredit',
@@ -44,4 +49,10 @@ public function pengiriman()
 {
     return $this->hasMany(Pengiriman::class, 'id_kredit');
 }
+
+public function angsuran()
+{
+    return $this->hasMany(Angsuran::class, 'id_kredit');
+}
+
 }
