@@ -6,6 +6,7 @@ use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class PelangganAuthController extends Controller
 {
@@ -61,8 +62,10 @@ class PelangganAuthController extends Controller
         }
     
         $pelanggan->save();
-    
-        return redirect()->route('pelanggan.auth.login')->with('pesan', 'Registrasi berhasil! Silakan login.');
+event(new Registered($pelanggan)); 
+
+return redirect()->route('pelanggan.auth.login')->with('pesan', 'Registrasi berhasil! Silakan cek email untuk verifikasi.');
+
     }
 
     public function loginForm()
@@ -83,10 +86,17 @@ class PelangganAuthController extends Controller
         'password' => $request->kata_kunci,
     ];
 
-   if (Auth::guard('pelanggan')->attempt($credentials)) {
-    $request->session()->regenerate();
-    return redirect('/'); 
+    if (Auth::guard('pelanggan')->attempt($credentials)) {
+        $user = Auth::guard('pelanggan')->user();
 
+        if (!$user->hasVerifiedEmail()) {
+            Auth::guard('pelanggan')->logout();
+
+            return back()->with('error', 'Email kamu belum diverifikasi. Silakan cek email untuk verifikasi.');
+        }
+
+        $request->session()->regenerate();
+        return redirect('/'); // atau redirect ke dashboard pelanggan
     }
 
     return back()->with('error', 'Email atau kata sandi salah.');

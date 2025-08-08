@@ -7,11 +7,29 @@ use App\Models\Asuransi;
 
 class AsuransiController extends Controller
 {
-    public function index()
-    {
-        $asuransi = Asuransi::all();
-        return view('asuransi.index', compact('asuransi'));
+    public function index(Request $request)
+{
+    $query = Asuransi::query();
+
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_perusahaan_asuransi', 'like', "%$search%")
+              ->orWhere('nama_asuransi', 'like', "%$search%")
+              ->orWhere('no_rekening', 'like', "%$search%");
+        });
     }
+
+    if ($request->filled('filter_perusahaan')) {
+        $query->where('nama_perusahaan_asuransi', $request->filter_perusahaan);
+    }
+
+    $asuransi = $query->latest()->get();
+    $perusahaanList = Asuransi::select('nama_perusahaan_asuransi')->distinct()->pluck('nama_perusahaan_asuransi');
+
+    return view('asuransi.index', compact('asuransi', 'perusahaanList'));
+}
+
 
     public function create()
     {

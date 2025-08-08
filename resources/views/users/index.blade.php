@@ -11,24 +11,44 @@
 @section('content')
 <div class="page-body">
     <div class="card">
-        <div class="card-header">
-            <h5><i class="ti-user mr-2"></i> Manajemen User</h5>
-            <span>Kelola akun user sesuai peran (admin, marketing, CEO)</span>
-        </div>
-        <div class="card-body">
-            <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h5><i class="ti-user mr-2"></i> Manajemen User</h5>
+                <span>Kelola akun user sesuai peran (admin, marketing, CEO)</span>
+            </div>
+            <a href="{{ route('users.create') }}" class="btn btn-primary mt-2 mt-md-0">
                 <i class="ti-plus mr-2"></i> Tambah User
             </a>
+        </div>
+        <div class="card-body">
 
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+            {{-- FORM FILTER & SEARCH --}}
+            <form method="GET" action="{{ route('users.index') }}" class="mb-3">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <input type="text" name="search" class="form-control" placeholder="Cari nama atau email..."
+                            value="{{ request('search') }}">
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <select name="role" class="form-control">
+                            <option value="">-- Semua Role --</option>
+                            <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="marketing" {{ request('role') == 'marketing' ? 'selected' : '' }}>Marketing</option>
+                            <option value="ceo" {{ request('role') == 'ceo' ? 'selected' : '' }}>CEO</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="ti-search mr-1"></i> Cari
+                        </button>
+                        <a href="{{ route('users.index') }}" class="btn btn-light border">
+                            <i class="ti-reload mr-1"></i> Reset
+                        </a>
+                    </div>
                 </div>
-            @endif
+            </form>
 
+            {{-- TABEL USER --}}
             <div class="table-responsive">
                 <table class="table table-hover table-striped table-bordered">
                     <thead class="thead-dark">
@@ -41,7 +61,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $key => $user)
+                        @forelse($users as $key => $user)
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $user->name }}</td>
@@ -51,16 +71,20 @@
                                 <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-warning edit-button" title="Edit">
                                     <i class="ti-pencil-alt"></i>
                                 </a>
-                                <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline delete-form">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger delete-button" title="Hapus" onclick="return confirm('Yakin ingin menghapus user ini?')">
-                                        <i class="ti-trash"></i>
-                                    </button>
-                                </form>
+                               <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline delete-form">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-sm btn-danger delete-button btn-delete" title="Hapus">
+        <i class="ti-trash"></i>
+    </button>
+</form>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Tidak ada data user ditemukan.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

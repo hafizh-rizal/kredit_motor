@@ -31,16 +31,30 @@ class KreditController extends Controller
         return view('kredit.show', compact('kredit'));
     }
 
-    public function index()
-    {
-        $kredit = Kredit::with([
-            'pengajuanKredit.pelanggan',
-            'pengajuanKredit.motor',
-            'metodeBayar'
-        ])->get();
+    public function index(Request $request)
+{
+    $query = Kredit::with([
+        'pengajuanKredit.pelanggan',
+        'pengajuanKredit.motor',
+        'metodeBayar'
+    ]);
 
-        return view('kredit.index', compact('kredit'));
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->whereHas('pengajuanKredit.pelanggan', function ($q) use ($search) {
+            $q->where('nama_pelanggan', 'like', '%' . $search . '%');
+        });
     }
+
+    if ($request->filled('status_kredit')) {
+        $query->where('status_kredit', $request->status_kredit);
+    }
+
+    $kredit = $query->latest()->paginate(10)->withQueryString();
+
+    return view('kredit.index', compact('kredit'));
+}
+
 
   public function create(Request $request)
 {

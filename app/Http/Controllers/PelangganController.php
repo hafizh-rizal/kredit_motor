@@ -11,11 +11,32 @@ use Illuminate\Database\QueryException;
 
 class PelangganController extends Controller
 {
-    public function index()
-    {
-        $pelanggans = Pelanggan::all();
-        return view('pelanggan.index', compact('pelanggans'));
+   public function index(Request $request)
+{
+    $search = $request->input('search');
+    $filterKota = $request->input('filter_kota');
+
+    $query = Pelanggan::query();
+
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_pelanggan', 'like', '%' . $search . '%')
+              ->orWhere('email', 'like', '%' . $search . '%')
+              ->orWhere('no_telp', 'like', '%' . $search . '%');
+        });
     }
+
+    if ($filterKota) {
+        $query->where('kota1', $filterKota);
+    }
+
+    $pelanggans = $query->latest()->get();
+
+    $daftarKota = Pelanggan::select('kota1')->distinct()->pluck('kota1');
+
+    return view('pelanggan.index', compact('pelanggans', 'daftarKota', 'search', 'filterKota'));
+}
+
     
     public function create()
     {

@@ -7,11 +7,24 @@ use App\Models\JenisCicilan;
 
 class JenisCicilanController extends Controller
 {
-    public function index()
-    {
-        $jenisCicilans = JenisCicilan::orderBy('lama_cicilan', 'asc')->get();
-        return view('jenis_cicilan.index', compact('jenisCicilans'));
+    public function index(Request $request)
+{
+    $query = JenisCicilan::query();
+
+    if ($request->filled('search')) {
+        $query->where('lama_cicilan', 'like', '%' . $request->search . '%')
+              ->orWhere('margin_kredit', 'like', '%' . $request->search . '%');
     }
+
+    if ($request->filled('filter_lama')) {
+        $query->where('lama_cicilan', $request->filter_lama);
+    }
+
+    $jenisCicilans = $query->orderBy('lama_cicilan', 'asc')->get();
+
+    return view('jenis_cicilan.index', compact('jenisCicilans'));
+}
+
 
     public function create()
     {

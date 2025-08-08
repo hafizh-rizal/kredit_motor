@@ -31,11 +31,26 @@ class PengirimanController extends Controller
         return view('pengiriman.show', compact('item'));
     }
     
-    public function index()
+ public function index(Request $request)
 {
-    $pengiriman = Pengiriman::with('kredit.pengajuanKredit.pelanggan')->latest()->get();
+    $query = Pengiriman::with('kredit.pengajuanKredit.pelanggan');
+
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->whereHas('kredit.pengajuanKredit', function ($q) use ($search) {
+            $q->where('nama_lengkap', 'like', "%$search%");
+        })->orWhere('no_resi', 'like', "%$search%");
+    }
+
+    if ($request->filled('status')) {
+        $query->where('status_kirim', $request->status);
+    }
+
+    $pengiriman = $query->latest()->paginate(10);
+
     return view('pengiriman.index', compact('pengiriman'));
 }
+
 
 public function create()
 {

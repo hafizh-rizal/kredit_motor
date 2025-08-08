@@ -267,11 +267,13 @@
 
                             <td>
                                 <a href="{{ route('pengajuan_kredit.edit', $pengajuan->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <form action="{{ route('pengajuan_kredit.destroy', $pengajuan->id) }}" method="POST" class="d-inline delete-form">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</button>
-                                </form>
+                               <form action="{{ route('pengajuan_kredit.destroy', $pengajuan->id) }}" method="POST" class="d-inline delete-form">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger btn-sm btn-delete" title="Hapus">
+        Hapus
+    </button>
+</form>
                             </td>
                         </tr>
                         @empty

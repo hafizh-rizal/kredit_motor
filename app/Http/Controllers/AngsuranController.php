@@ -8,11 +8,24 @@ use Illuminate\Http\Request;
 
 class AngsuranController extends Controller
 {
-    public function index()
-    {
-        $angsuran = Angsuran::with('kredit')->get();
-        return view('angsuran.index', compact('angsuran'));
+    public function index(Request $request)
+{
+    $query = Angsuran::with(['kredit.pengajuanKredit.pelanggan']);
+
+    if ($request->filled('nama')) {
+        $query->whereHas('kredit.pengajuanKredit.pelanggan', function ($q) use ($request) {
+            $q->where('nama_pelanggan', 'like', '%' . $request->nama . '%');
+        });
     }
+
+    if ($request->filled('tgl_dari') && $request->filled('tgl_sampai')) {
+        $query->whereBetween('tgl_bayar', [$request->tgl_dari, $request->tgl_sampai]);
+    }
+
+    $angsuran = $query->latest()->get();
+
+    return view('angsuran.index', compact('angsuran'));
+}
 
     public function create(Request $request)
 {

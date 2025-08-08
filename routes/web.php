@@ -24,16 +24,50 @@ use App\Http\Controllers\{
     KurirController,
     ProductController,
     ServiceController,
-    UserController
+    UserController,
+    PelangganForgotController,
+    PelangganResetController
 
 };
+
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+
+Route::middleware(['auth:pelanggan'])->prefix('pelanggan')->group(function () {
+    Route::get('/email/verify', function () {
+        return view('pelanggan.auth.verify-email');
+    })->name('pelanggan.verification.notice');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user('pelanggan')->sendEmailVerificationNotification();
+        return back()->with('message', 'Link verifikasi telah dikirim ulang!');
+    })->middleware(['throttle:6,1', 'auth:pelanggan'])->name('pelanggan.verification.send');
+});
+
+Route::get('/pelanggan/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    auth()->guard('pelanggan')->loginUsingId($request->route('id'));
+
+    $request->fulfill();
+
+    return redirect()->route('pelanggan.dashboard'); 
+})->middleware(['signed'])->name('pelanggan.verification.verify');
+
+
 
 Route::prefix('pelanggan')->middleware('guest:pelanggan')->group(function () {
     Route::get('/login', [PelangganAuthController::class, 'loginForm'])->name('pelanggan.auth.login');
     Route::post('/login', [PelangganAuthController::class, 'login'])->name('pelanggan.auth.submit');
     Route::get('/register', [PelangganAuthController::class, 'registerForm'])->name('pelanggan.auth.register');
     Route::post('/register', [PelangganAuthController::class, 'register'])->name('pelanggan.auth.register.submit');
+
+
+    Route::get('/forgot', [PelangganForgotController::class, 'showLinkRequestForm'])->name('pelanggan.password.request');
+    Route::post('/forgot', [PelangganForgotController::class, 'sendResetLinkEmail'])->name('pelanggan.password.email');
+
+    Route::get('/reset/{token}', [PelangganResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset', [PelangganResetController::class, 'reset'])->name('pelanggan.password.update');
 });
+
 
 
 Route::post('/pelanggan/logout', [PelangganAuthController::class, 'logout'])->name('pelanggan.auth.logout');
@@ -64,25 +98,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
 Route::resource('users', UserController::class);
-    //  Route::get('/dashboard', function () {
-    //     $role = Auth::user()->role;
-
-    //     if ($role === 'admin') {
-    //         return view('admin.dashboard');
-    //     } elseif ($role === 'marketing') {
-    //         return view('marketing.dashboard');
-    //     } elseif ($role === 'kurir') {
-    //         return view('kurir.dashboard');
-    //     } elseif ($role === 'ceo') {
-    //         return view('ceo.dashboard');
-    //     } else {
-    //         abort(403); 
-    //     }
-    // })->name('dashboard');
-    //   Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    // Route::get('/marketing', [MarketingController::class, 'index'])->name('marketing.index');
-    // Route::get('/ceo', [CeoController::class, 'index'])->name('ceo.index');
-    // Route::get('/kurir', [KurirController::class, 'index'])->name('kurir.index');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('kredit', KreditController::class)->except(['create', 'store']);

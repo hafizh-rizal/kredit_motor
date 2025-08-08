@@ -16,6 +16,7 @@
             <span>Kelola dan lihat semua data kredit yang tersedia</span>
         </div>
         <div class="card-body">
+
             <!-- Tombol Tambah -->
             <a href="{{ route('kredit.create') }}" class="btn btn-primary mb-3">+ Tambah Kredit</a>
 
@@ -25,6 +26,29 @@
             @elseif(session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
+
+            <!-- Filter & Search -->
+            <form action="{{ route('kredit.index') }}" method="GET" class="row mb-4">
+                <div class="col-md-4 mb-2">
+                    <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari nama pelanggan...">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <select name="status_kredit" class="form-control">
+                        <option value="">-- Semua Status --</option>
+                        <option value="Dicicil" {{ request('status_kredit') == 'Dicicil' ? 'selected' : '' }}>Dicicil</option>
+                        <option value="Macet" {{ request('status_kredit') == 'Macet' ? 'selected' : '' }}>Macet</option>
+                        <option value="Lunas" {{ request('status_kredit') == 'Lunas' ? 'selected' : '' }}>Lunas</option>
+                    </select>
+                </div>
+                <div class="col-md-5 mb-2">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="ti-search mr-1"></i> Cari
+                    </button>
+                    <a href="{{ route('kredit.index') }}" class="btn btn-light border">
+                        <i class="ti-reload mr-1"></i> Reset
+                    </a>
+                </div>
+            </form>
 
             <!-- Tabel -->
             <div class="table-responsive">
@@ -55,14 +79,13 @@
                                 <td>{{ $item->metodeBayar->metode_pembayaran ?? '-' }}</td>
                                 <td>{{ $item->tgl_mulai_kredit }}</td>
                                 <td>{{ $item->tgl_selesai_kredit }}</td>
-                              <td>
-    @if($item->dp)
-        Rp{{ number_format($item->dp, 0, ',', '.') }}
-    @else
-        -
-    @endif
-</td>
-
+                                <td>
+                                    @if($item->dp)
+                                        Rp{{ number_format($item->dp, 0, ',', '.') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td>
                                     <span class="badge 
                                         @if($item->status_pembayaran_dp == 'Sudah Dibayar') bg-success 
@@ -71,41 +94,40 @@
                                         {{ $item->status_pembayaran_dp }}
                                     </span>
                                 </td>
-                               <td>
-    @if($item->bukti_pembayaran_dp)
-        <a href="#" data-toggle="modal" data-target="#modalDP{{ $item->id }}" class="btn btn-sm btn-info">Lihat</a>
+                                <td>
+                                    @if($item->bukti_pembayaran_dp)
+                                        <a href="#" data-toggle="modal" data-target="#modalDP{{ $item->id }}" class="btn btn-sm btn-info">Lihat</a>
 
-        <!-- Modal Bukti Pembayaran DP -->
-        <div class="modal fade" id="modalDP{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalDPLabel{{ $item->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalDPLabel{{ $item->id }}">Bukti Pembayaran DP</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body text-center">
-                        @php
-                            $ext = pathinfo($item->bukti_pembayaran_dp, PATHINFO_EXTENSION);
-                        @endphp
+                                        <!-- Modal Bukti Pembayaran DP -->
+                                        <div class="modal fade" id="modalDP{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalDPLabel{{ $item->id }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalDPLabel{{ $item->id }}">Bukti Pembayaran DP</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body text-center">
+                                                        @php
+                                                            $ext = pathinfo($item->bukti_pembayaran_dp, PATHINFO_EXTENSION);
+                                                        @endphp
 
-                        @if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
-                            <img src="{{ asset('storage/' . $item->bukti_pembayaran_dp) }}" class="img-fluid" alt="Bukti Pembayaran DP">
-                        @elseif (strtolower($ext) == 'pdf')
-                            <iframe src="{{ asset('storage/' . $item->bukti_pembayaran_dp) }}" width="100%" height="500px"></iframe>
-                        @else
-                            <p>Format file tidak dikenali.</p>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    @else
-        <span class="text-muted">-</span>
-    @endif
-</td>
-
+                                                        @if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
+                                                            <img src="{{ asset('storage/' . $item->bukti_pembayaran_dp) }}" class="img-fluid" alt="Bukti Pembayaran DP">
+                                                        @elseif (strtolower($ext) == 'pdf')
+                                                            <iframe src="{{ asset('storage/' . $item->bukti_pembayaran_dp) }}" width="100%" height="500px"></iframe>
+                                                        @else
+                                                            <p>Format file tidak dikenali.</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                                 <td>Rp{{ number_format($item->sisa_kredit, 0, ',', '.') }}</td>
                                 <td>
                                     <span class="badge 
@@ -119,10 +141,12 @@
                                 <td>
                                     <a href="{{ route('kredit.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                     <form action="{{ route('kredit.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm btn-delete" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</button>
-                                    </form>
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger btn-sm btn-delete">
+        Hapus
+    </button>
+</form>
                                 </td>
                             </tr>
                         @empty
@@ -132,6 +156,11 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                <!-- Pagination -->
+                <div class="mt-3">
+                    {{ $kredit->links() }}
+                </div>
             </div>
         </div>
     </div>

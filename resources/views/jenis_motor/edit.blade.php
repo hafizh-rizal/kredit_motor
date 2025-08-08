@@ -15,7 +15,7 @@
             <h5><i class="ti-pencil-alt mr-2"></i> Form Edit Jenis Motor</h5>
         </div>
         <div class="card-body">
-            <form action="{{ route('jenis_motor.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('jenis_motor.update', $motor->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="form-group row">

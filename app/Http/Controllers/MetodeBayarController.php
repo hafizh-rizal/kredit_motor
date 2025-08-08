@@ -8,11 +8,33 @@ use Illuminate\Support\Facades\Storage;
 
 class MetodeBayarController extends Controller
 {
-    public function index()
-    {
-        $metode_bayar = MetodeBayar::all();
-        return view('metode_bayar.index', compact('metode_bayar'));
+    public function index(Request $request)
+{
+    $query = MetodeBayar::query();
+
+    if ($request->filled('tempat_bayar')) {
+        $query->where('tempat_bayar', $request->tempat_bayar);
     }
+
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('metode_pembayaran', 'like', '%' . $request->search . '%')
+              ->orWhere('tempat_bayar', 'like', '%' . $request->search . '%')
+              ->orWhere('no_rekening', 'like', '%' . $request->search . '%');
+        });
+    }
+
+    $list_tempat_bayar = MetodeBayar::select('tempat_bayar')
+        ->distinct()
+        ->orderBy('tempat_bayar')
+        ->pluck('tempat_bayar');
+
+    $metode_bayar = $query->latest()->paginate(10);
+
+    return view('metode_bayar.index', compact('metode_bayar', 'list_tempat_bayar'));
+}
+
+
 
     public function create()
     {

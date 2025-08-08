@@ -129,6 +129,9 @@
           <input type="password" name="kata_kunci" class="form-control" placeholder="Masukkan kata sandi" required>
         </div>
       </div>
+      <div class="form-text text-end">
+    <a href="{{ route('pelanggan.password.request') }}">Lupa Kata Sandi?</a>
+</div>
 
       <button type="submit" class="btn btn-login w-100 py-2 mt-2">Masuk</button>
 

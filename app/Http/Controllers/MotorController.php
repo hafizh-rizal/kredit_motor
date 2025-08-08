@@ -35,11 +35,28 @@ class MotorController extends Controller
         return view('motor.create', compact('jenis_motor'));
     }
 
-    public function index()
+public function index(Request $request)
 {
-    $motors = Motor::with('jenis_motor')->get();
-    return view('motor.index', compact('motors'));
+    $query = Motor::with('jenis_motor');
+
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_motor', 'like', "%$search%")
+              ->orWhere('warna', 'like', "%$search%");
+        });
+    }
+
+    if ($request->filled('jenis')) {
+        $query->where('id_jenis_motor', $request->input('jenis'));
+    }
+
+    $motors = $query->latest()->paginate(10);
+    $jenis_motor = JenisMotor::all();
+
+    return view('motor.index', compact('motors', 'jenis_motor'));
 }
+
 
 
     // Menyimpan motor baru

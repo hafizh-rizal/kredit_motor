@@ -74,15 +74,19 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+      <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Delete Confirmation -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const deleteButtons = document.querySelectorAll('.btn-delete');
-    
+
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function (e) {
                     e.preventDefault();
                     const form = this.closest('form');
-    
+
                     Swal.fire({
                         title: "Apakah kamu yakin?",
                         text: "Data yang dihapus tidak bisa dikembalikan!",
@@ -90,7 +94,7 @@
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
-                        confirmButtonText: "Ya, hapus saja!",
+                        confirmButtonText: "Ya, hapus!",
                         cancelButtonText: "Batal"
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -99,9 +103,31 @@
                     });
                 });
             });
+
+            // Success Message
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            // Error Message
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
         });
     </script>
-    
+
 
 </body>
 </html>

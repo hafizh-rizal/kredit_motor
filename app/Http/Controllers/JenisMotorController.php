@@ -9,11 +9,21 @@ use Illuminate\Support\Facades\Storage;
 
 class JenisMotorController extends Controller
 {
-    public function index()
-    {
-        $data = JenisMotor::all();
-        return view('jenis_motor.index', compact('data'));
+    public function index(Request $request)
+{
+    $query = JenisMotor::query();
+
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function($q) use ($search) {
+            $q->where('merk', 'like', "%$search%")
+              ->orWhere('jenis', 'like', "%$search%");
+        });
     }
+
+    $data = $query->latest()->paginate(10); 
+    return view('jenis_motor.index', compact('data'));
+}
 
     public function create()
     {

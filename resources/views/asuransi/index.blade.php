@@ -13,85 +13,86 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
             <div>
-                <h5><i class="ti-wallet mr-2"></i> Daftar Metode Pembayaran</h5>
-                <span>Kelola dan lihat semua metode pembayaran yang tersedia</span>
+                <h5><i class="ti-shield mr-2"></i> Data Asuransi</h5>
+                <span>Kelola daftar perusahaan asuransi dan margin terkait</span>
             </div>
-            <a href="{{ route('metode_bayar.create') }}" class="btn btn-primary mt-2 mt-md-0">
-                <i class="ti-plus mr-2"></i> Tambah Metode Bayar
+            <a href="{{ route('asuransi.create') }}" class="btn btn-primary mt-2 mt-md-0">
+                <i class="ti-plus mr-2"></i> Tambah Asuransi
             </a>
         </div>
         <div class="card-body">
 
-            {{-- ALERT SUKSES --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Tutup">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
             @endif
 
             {{-- FORM FILTER & SEARCH --}}
-            <form method="GET" action="{{ route('metode_bayar.index') }}" class="mb-3">
+            <form method="GET" action="{{ route('asuransi.index') }}" class="mb-3">
                 <div class="row">
                     <div class="col-md-4 mb-2">
-                        <input type="text" name="search" class="form-control" placeholder="Cari metode / rekening..."
+                        <input type="text" name="search" class="form-control" placeholder="Cari nama perusahaan / asuransi / rekening..."
                             value="{{ request('search') }}">
                     </div>
                     <div class="col-md-3 mb-2">
-                        <select name="tempat_bayar" class="form-control">
-                            <option value="">-- Semua Tempat Bayar --</option>
-                            @foreach ($list_tempat_bayar as $tempat)
-                                <option value="{{ $tempat }}" {{ request('tempat_bayar') == $tempat ? 'selected' : '' }}>
-                                    {{ $tempat }}
+                        <select name="filter_perusahaan" class="form-control">
+                            <option value="">-- Semua Perusahaan --</option>
+                            @foreach($perusahaanList as $perusahaan)
+                                <option value="{{ $perusahaan }}" {{ request('filter_perusahaan') == $perusahaan ? 'selected' : '' }}>
+                                    {{ $perusahaan }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-5 mb-2">
                         <button type="submit" class="btn btn-secondary">
-                            <i class="ti-filter mr-1"></i> Filter
+                            <i class="ti-search mr-1"></i> Cari
                         </button>
-                        <a href="{{ route('metode_bayar.index') }}" class="btn btn-light border">
+                        <a href="{{ route('asuransi.index') }}" class="btn btn-light border">
                             <i class="ti-reload mr-1"></i> Reset
                         </a>
                     </div>
                 </div>
             </form>
 
-            {{-- TABEL --}}
+            {{-- TABEL ASURANSI --}}
             <div class="table-responsive">
-                <table class="table table-hover table-striped table-bordered align-middle">
+                <table class="table table-hover table-striped table-bordered">
                     <thead class="thead-dark">
                         <tr>
                             <th>No</th>
-                            <th>Metode</th>
-                            <th>Tempat Bayar</th>
-                            <th>No Rekening</th>
                             <th>Logo</th>
+                            <th>Perusahaan</th>
+                            <th>Nama Asuransi</th>
+                            <th>Margin (%)</th>
+                            <th>No Rekening</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($metode_bayar as $key => $metode)
+                        @forelse($asuransi as $key => $item)
                         <tr>
-                            <td>{{ $key + $metode_bayar->firstItem() }}</td>
-                            <td>{{ $metode->metode_pembayaran }}</td>
-                            <td>{{ $metode->tempat_bayar }}</td>
-                            <td>{{ $metode->no_rekening }}</td>
+                            <td>{{ $key + 1 }}</td>
                             <td>
-                                @if($metode->url_logo)
-                                    <img src="{{ asset($metode->url_logo) }}" alt="Logo" width="50" class="img-thumbnail">
+                                @if($item->url_logo)
+                                    <img src="{{ asset('storage/'.$item->url_logo) }}" class="img-thumbnail" width="60" height="60" style="object-fit: cover;">
                                 @else
-                                    <span class="text-muted">-</span>
+                                    <span class="text-muted">Tidak Ada</span>
                                 @endif
                             </td>
+                            <td>{{ $item->nama_perusahaan_asuransi }}</td>
+                            <td>{{ $item->nama_asuransi }}</td>
+                            <td>{{ $item->margin_asuransi }}%</td>
+                            <td>{{ $item->no_rekening }}</td>
                             <td class="action-buttons">
-                                <a href="{{ route('metode_bayar.edit', $metode->id) }}" class="btn btn-sm btn-warning edit-button" title="Edit">
+                                <a href="{{ route('asuransi.edit', $item) }}" class="btn btn-sm btn-warning edit-button" title="Edit">
                                     <i class="ti-pencil-alt"></i>
                                 </a>
-                               <form action="{{ route('metode_bayar.destroy', $metode->id) }}" method="POST" class="d-inline delete-form">
+                                <form action="{{ route('asuransi.destroy', $item) }}" method="POST" class="d-inline delete-form">
     @csrf
     @method('DELETE')
     <button type="submit" class="btn btn-sm btn-danger delete-button btn-delete" title="Hapus">
@@ -102,22 +103,17 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">Tidak ada data metode bayar ditemukan.</td>
+                            <td colspan="7" class="text-center text-muted">Tidak ada data ditemukan.</td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
-            {{-- PAGINATION --}}
-            <div class="mt-3">
-                {{ $metode_bayar->withQueryString()->links() }}
-            </div>
         </div>
     </div>
 </div>
 
-{{-- STYLE --}}
 <style>
     .action-buttons {
         white-space: nowrap;

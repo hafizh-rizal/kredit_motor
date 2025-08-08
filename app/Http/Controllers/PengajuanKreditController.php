@@ -31,11 +31,24 @@ class PengajuanKreditController extends Controller
         return view('pengajuan_kredit.show', compact('pengajuanKredit'));
     }
 
-    public function index()
-    {
-        $pengajuanKredit = PengajuanKredit::with('pelanggan', 'motor')->get();
-        return view('pengajuan_kredit.index', compact('pengajuanKredit'));
+  public function index(Request $request)
+{
+    $query = PengajuanKredit::with('pelanggan', 'motor');
+
+    if ($request->filled('search')) {
+        $query->whereHas('pelanggan', function ($q) use ($request) {
+            $q->where('nama', 'like', '%' . $request->search . '%');
+        });
     }
+
+    if ($request->filled('status_pengajuan')) {
+        $query->where('status_pengajuan', $request->status_pengajuan);
+    }
+
+    $pengajuanKredit = $query->latest()->paginate(10)->withQueryString();
+
+    return view('pengajuan_kredit.index', compact('pengajuanKredit'));
+}
 
     public function create(Request $request)
     {
